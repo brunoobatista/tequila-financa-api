@@ -1,0 +1,13 @@
+{
+    "sqltools.connections": [
+        {
+            "database": "tequila",
+            "dialect": "PostgreSQL",
+            "name": "Tequila",
+            "password": "1234",
+            "port": 5432,
+            "server": "localhost",
+            "username": "postgres"
+        }
+    ]
+}

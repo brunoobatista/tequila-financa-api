@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  postgres-db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: "pgadmin4"
+    ports:
+      - "15432:5432"
+    volumes:
+      - /home/bruno/projetos/tequila_financa/data:/var/lib/postgresql/data 
+    networks:
+      - postgres-compose-network
+      
+  pgadmin4:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "brunorafael.o@hotmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "pgadmin4"
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres-db
+    networks:
+      - postgres-compose-network
+
+networks: 
+  postgres-compose-network:
+    driver: bridge
