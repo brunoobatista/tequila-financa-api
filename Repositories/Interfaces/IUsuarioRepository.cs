@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Tequila.Models;
+﻿using Tequila.Models;
 
 namespace Tequila.Repositories.Interfaces
 {
     public interface IUsuarioRepository
     {
         Usuario ValidarLoginUsuario(AuthenticationDTO authentication);
-        dynamic GetById(long Id);
+        Usuario getDetail(long Id);
+        Usuario getById(long Id);
+        Usuario salvar(Tequila.Models.DTOs.UsuarioDTO usuarioDto);
+
     }
 }

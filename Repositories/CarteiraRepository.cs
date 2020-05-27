@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using Tequila.Models;
-using Tequila.Models.Enum;
 using Tequila.Repositories.Interfaces;
 
 namespace Tequila.Repositories

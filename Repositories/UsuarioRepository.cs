@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data.Entity;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Tequila.Models;
+using Tequila.Models.DTOs;
 using Tequila.Repositories.Interfaces;
 using Tequila.Services;
 
@@ -19,27 +19,53 @@ namespace Tequila.Repositories
             context = ctx;
         }
 
-        public dynamic GetById(long Id)
+        public Usuario salvar(UsuarioDTO usuarioDto)
         {
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<UsuarioDTO, Usuario>());
+            var mapper = config.CreateMapper();
 
-            //var data = (from s in _context.Usuario
-            //            join e
-            //            where s.Id == Id
-            //            select s).FirstOrDefault();
+            Usuario usuario = mapper.Map<Usuario>(usuarioDto);
 
-            //var usuario = context.Usuario
-            //        .Join(
-            //                context.Endereco,
-            //                usuario => usuario.Id,
-            //                endereco => endereco.UsuarioId,
-            //                (usuario, endereco) => new
-            //                {
-            //                    usuario.Endereco(endereco)
-            //                }
-            //            ).Where(u => u.usuario.Id == Id).FirstOrDefault();
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    if (usuarioDto.endereco != null)
+                    {
+                        Endereco endereco = usuarioDto.endereco;
+                        context.Endereco.Add(endereco);
+                        context.SaveChanges();
+                        usuario.EnderecoId = endereco.Id;
+                    }
+
+                    usuario.Senha = HashService.GenerateHash(usuario.Senha);
+
+                    context.Usuario.Add(usuario);
+                    context.SaveChanges();
 
 
-            var usuario = context.Usuario.Include(u => u.Endereco).FirstOrDefault(u => u.Id == Id);
+                    transaction.Commit();
+
+                    return usuario;
+                } catch(Exception e)
+                {
+                    transaction.Rollback();
+                    throw new Exception(e.Message);
+                }
+            }
+        }
+
+        public Usuario getById(long id)
+        {
+            return context.Usuario.Where(u => u.Ativo == 1 && u.Id == id).SingleOrDefault();
+        }
+
+        public Usuario getDetail(long id)
+        {
+            var usuario = context.Usuario.Include(u => u.Endereco)
+                    .AsNoTracking()
+                    .Where(u => u.Ativo == 1 && u.Id == id)
+                    .SingleOrDefault();
 
             return usuario;
 
@@ -48,7 +74,10 @@ namespace Tequila.Repositories
         public Usuario ValidarLoginUsuario(AuthenticationDTO authentication)
         {
             var senhaHash = HashService.GenerateHash(authentication.Senha);
-            return context.Usuario.Where(e => e.Email == authentication.Email && e.Senha == senhaHash && e.Ativo == 1).FirstOrDefault();
+            return context.Usuario
+                .AsNoTracking()
+                .Where(e => e.Email == authentication.Email && e.Senha == senhaHash && e.Ativo == 1)
+                .FirstOrDefault();
         }
 
     }

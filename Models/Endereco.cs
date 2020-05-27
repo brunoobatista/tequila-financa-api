@@ -8,7 +8,9 @@ namespace Tequila.Models
     {
 
         [Column("id")]
-        public long EnderecoId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
         [Column("rua")]
         public string Rua { get; set; }
         [Column("cep")]
@@ -17,11 +19,6 @@ namespace Tequila.Models
         public string Numero { get; set; }
         [Column("complemento")]
         public string Complemento { get; set; }
-
-        [Column("usuario_id")]
-        public long UsuarioId { get; set; }
-        [ForeignKey("UsuarioId")]
-        public Usuario Usuario { get; set; }
 
     }
 }

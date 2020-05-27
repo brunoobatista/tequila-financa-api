@@ -27,7 +27,7 @@ namespace Tequila.Services
 
         public Carteira Salvar(Carteira carteira)
         {
-            Usuario usuario = this.usuarioRepository.GetById(carteira.UsuarioId);
+            Usuario usuario = this.usuarioRepository.getById(carteira.UsuarioId);
             carteira.Usuario = usuario;
             carteira.Renda = usuario.Renda;
             carteira.StatusId = (int)STATUS.ABERTO;

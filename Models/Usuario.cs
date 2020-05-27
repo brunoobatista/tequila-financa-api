@@ -1,9 +1,6 @@
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace Tequila.Models
@@ -20,8 +17,11 @@ namespace Tequila.Models
         //private ILazyLoader LazyLoader { get; set; }
 
         [Key, Column("id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
+        [Column("endereco_id")]
+        public long? EnderecoId { get; set; }
         public virtual Endereco Endereco { get; set; }
 
         //private Endereco _endereco;
@@ -30,8 +30,6 @@ namespace Tequila.Models
         //    get => LazyLoader.Load(this, ref _endereco);
         //    set => _endereco = value;
         //}
-
-        
 
         [Column("email")] 
         public string Email { get; set; }

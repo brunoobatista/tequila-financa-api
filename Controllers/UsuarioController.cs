@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Tequila.Repositories.Interfaces;
+using Tequila.Models;
+using Tequila.Models.DTOs;
+using Tequila.Repositories;
 
 namespace Tequila.Controllers
 {
@@ -18,29 +21,36 @@ namespace Tequila.Controllers
             _usuarioRepository = usuarioRepository;
         }
 
-        //[HttpGet]
-        //public virtual IEnumerable<Usuario> Get()
-        //{
-        //    var usuarios = _context.Usuario.ToList();
-        //    return usuarios;
-        //}
-
         [HttpGet("{id}")]
-        public IActionResult Get(long Id)
+        public IActionResult get(long id)
         {
-            var usuario = _context.Usuario.Find(Id);
+            var usuario = _usuarioRepository.getById(id);
             if (usuario == null)
                 return NotFound();
             return Ok(usuario);
         }
 
-        [HttpGet("{id}/detail")]
-        public IActionResult GetDetail(long Id)
+        [HttpGet("{id}/detalhe")]
+        public IActionResult getDetail(long Id)
         {
-            var usuario = _usuarioRepository.GetById(Id);
+            var usuario = _usuarioRepository.getDetail(Id);
             if (usuario == null)
                 return NotFound();
             return Ok(usuario);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("/cadastro")]
+        public ActionResult<Usuario> salvar([FromBody] UsuarioDTO usuarioDto)
+        {
+            try
+            {
+                Usuario usuario = _usuarioRepository.salvar(usuarioDto);
+                return Ok(usuario);
+            } catch
+            {
+                return BadRequest("Falha ao salvar usuário");
+            }
         }
 
     }

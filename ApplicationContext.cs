@@ -1,7 +1,5 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using Tequila.Models;
 
 namespace Tequila
@@ -29,7 +27,7 @@ namespace Tequila
             builder.Entity<Usuario>()
                     .HasOne(u => u.Endereco)
                     .WithOne()
-                    .HasForeignKey<Endereco>( u => u.UsuarioId);
+                    .HasForeignKey<Usuario>(u => u.EnderecoId);
         }
 
         public DbSet<Endereco> Endereco { get; set; }
