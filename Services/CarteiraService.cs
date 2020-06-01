@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tequila.Models;
 using Tequila.Models.Enum;
+using Tequila.Repositories;
 using Tequila.Repositories.Interfaces;
 using Tequila.Services.Interfaces;
 
@@ -11,10 +12,10 @@ namespace Tequila.Services
 {
     public class CarteiraService : ICarteiraService
     {
-        private readonly ICarteiraRepository carteiraRepository;
-        private readonly IUsuarioRepository usuarioRepository;
+        private readonly CarteiraRepository carteiraRepository;
+        private readonly UsuarioRepository usuarioRepository;
 
-        public CarteiraService(ICarteiraRepository carteiraRepository, IUsuarioRepository usuarioRepository)
+        public CarteiraService(CarteiraRepository carteiraRepository, UsuarioRepository usuarioRepository)
         {
             this.carteiraRepository = carteiraRepository;
             this.usuarioRepository = usuarioRepository;
@@ -27,7 +28,7 @@ namespace Tequila.Services
 
         public Carteira Salvar(Carteira carteira)
         {
-            Usuario usuario = this.usuarioRepository.getById(carteira.UsuarioId);
+            Usuario usuario = this.usuarioRepository.Get(carteira.UsuarioId);
             carteira.Usuario = usuario;
             carteira.Renda = usuario.Renda;
             carteira.StatusId = (int)STATUS.ABERTO;

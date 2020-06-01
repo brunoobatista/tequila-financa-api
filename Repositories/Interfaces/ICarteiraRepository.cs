@@ -10,8 +10,7 @@ namespace Tequila.Repositories.Interfaces
     {
         Carteira Salvar(Carteira Carteira);
         Carteira GetCarteira(long Id);
-        Carteira GetCarteiraLazy(long id);
         Carteira GetCarteiraAtiva(long IdUsuario);
-        ICollection<Carteira> GetAllCarteirasByUsuario(long IdUsuario);
+        IEnumerable<Carteira> GetAllCarteirasByUsuario(long IdUsuario);
     }
 }

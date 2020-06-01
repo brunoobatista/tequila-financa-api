@@ -4,6 +4,8 @@ using Tequila.Repositories.Interfaces;
 
 using Tequila.Models;
 using System;
+using Tequila.Repositories;
+using Tequila.Services;
 using Tequila.Services.Interfaces;
 
 namespace Tequila.Controllers
@@ -13,10 +15,10 @@ namespace Tequila.Controllers
     [Route("carteiras")]
     public class CarteiraController : ControllerBase
     {
-        private readonly ICarteiraService carteiraService;
-        private readonly ICarteiraRepository carteiraRepository;
+        private readonly CarteiraService carteiraService;
+        private readonly CarteiraRepository carteiraRepository;
 
-        public CarteiraController(ICarteiraService carteiraService, ICarteiraRepository carteiraRepository)
+        public CarteiraController(CarteiraService carteiraService, CarteiraRepository carteiraRepository)
         {
             this.carteiraService = carteiraService;
             this.carteiraRepository = carteiraRepository;
@@ -43,26 +45,6 @@ namespace Tequila.Controllers
             {
                 Carteira carteira = this.carteiraService.GetById(Id);
                 return Ok(carteira);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [HttpGet("{id}/detail")]
-        public ActionResult<Carteira> GetCarteiraByIdLazy([FromRoute] long Id)
-        {
-            try
-            {
-                //using (var app = new ApplicationContext())
-                //{
-
-                //}
-
-
-                Carteira carteia = this.carteiraRepository.GetCarteiraLazy(Id);
-                return Ok(carteia);
             }
             catch (Exception e)
             {

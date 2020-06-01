@@ -2,11 +2,12 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Tequila.Models.Interfaces;
 
 namespace Tequila.Models
 {
     [Table("usuario")]
-    public class Usuario
+    public class Usuario: IEntity
     {
 
         public Usuario(/*ILazyLoader lazyLoader*/)
@@ -22,6 +23,7 @@ namespace Tequila.Models
 
         [Column("endereco_id")]
         public long? EnderecoId { get; set; }
+        [ForeignKey("EnderecoId")]
         public virtual Endereco Endereco { get; set; }
 
         //private Endereco _endereco;
@@ -31,7 +33,7 @@ namespace Tequila.Models
         //    set => _endereco = value;
         //}
 
-        [Column("email")] 
+        [Column("email"), Required] 
         public string Email { get; set; }
 
         [Column("nome")] 
@@ -44,10 +46,10 @@ namespace Tequila.Models
         [Column("avatar")]
         public string Avatar { get; set; }
 
-        [Column("cpf_cnpj")]
+        [Column("cpf_cnpj"), Required]
         public string CpfCnpj { get; set; }
 
-        [Column("renda")]
+        [Column("renda"), Required]
         public decimal Renda { get; set; }
 
         [Column("tipo_renda")]

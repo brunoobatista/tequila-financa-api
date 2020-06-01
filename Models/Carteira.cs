@@ -3,11 +3,12 @@ using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Tequila.Models.Interfaces;
 
 namespace Tequila.Models
 {
     [Table("carteira")]
-    public class Carteira
+    public class Carteira : IEntity
     {
         [Key, Column("id")]
         public long Id { get; set; }
@@ -32,7 +33,6 @@ namespace Tequila.Models
         [Column("despesa")]
         public decimal? Despesa { get; set; }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("criado_em")]
         public DateTime? CriadoEm { get; set; }
@@ -40,7 +40,6 @@ namespace Tequila.Models
         [Column("alterado_em")]
         public DateTime? AlteradoEm { get; set; }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]
         [Column("ativo")]

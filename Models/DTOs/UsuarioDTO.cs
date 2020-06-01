@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tequila.Models.DTOs.Interfaces;
 
 namespace Tequila.Models.DTOs
 {
-    public class UsuarioDTO
+    public class UsuarioDTO : IDTO
     {
+        public long id { get; set; }
+        
         public virtual Endereco endereco { get; set; }
 
         public string email { get; set; }

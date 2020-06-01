@@ -20,10 +20,10 @@ namespace Tequila.Controllers
     public class TokenController : ControllerBase
     {
 
-        private readonly ITokenService _tokenService;
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly TokenService _tokenService;
+        private readonly UsuarioRepository _usuarioRepository;
 
-        public TokenController(ITokenService tokenService, IUsuarioRepository usuarioRepository)
+        public TokenController(TokenService tokenService, UsuarioRepository usuarioRepository)
         {
             _tokenService = tokenService;
             _usuarioRepository = usuarioRepository;

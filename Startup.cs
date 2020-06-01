@@ -37,13 +37,11 @@ namespace Tequila
                 )
             );
 
+            services.AddScoped<CarteiraRepository>();
+            services.AddScoped<UsuarioRepository>();
 
-            services.AddScoped(typeof(ITokenService), typeof(TokenService));
-            services.AddScoped(typeof(ICarteiraService), typeof(CarteiraService));
-
-            services.AddScoped(typeof(IUsuarioRepository), typeof(UsuarioRepository));
-            services.AddScoped(typeof(ICarteiraRepository), typeof(CarteiraRepository));
-
+            services.AddScoped<TokenService>();
+            services.AddScoped<CarteiraService>();
 
 
             var key = Encoding.ASCII.GetBytes(Settings.Secret);

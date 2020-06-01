@@ -1,22 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using Tequila.Models;
-using Tequila.Repositories.Interfaces;
 
 namespace Tequila.Repositories
 {
-    public class CarteiraRepository : ICarteiraRepository
+    public class CarteiraRepository : EFCoreRepository<Carteira, ApplicationContext>
     {
         private readonly ApplicationContext _context;
 
-        public CarteiraRepository(ApplicationContext context)
+        public CarteiraRepository(ApplicationContext context) : base(context)
         {
             _context = context;
         }
 
-        public ICollection<Carteira> GetAllCarteirasByUsuario(long IdUsuario)
+        public IEnumerable GetAllCarteirasByUsuario(long IdUsuario)
         {
             throw new NotImplementedException();
         }
@@ -26,13 +25,6 @@ namespace Tequila.Repositories
             return _context.Carteira.Find(Id);
         }
 
-        public Carteira GetCarteiraLazy(long Id)
-        {
-
-
-            return _context.Carteira.Include("Usuario").Where(c => c.Id == Id).FirstOrDefault();
-        }
-
         public Carteira GetCarteiraAtiva(long IdUsuario)
         {
             throw new NotImplementedException();
@@ -40,9 +32,7 @@ namespace Tequila.Repositories
 
         public Carteira Salvar(Carteira carteira)
         {
-            _context.Carteira.Add(carteira);
-            _context.SaveChanges();
-
+            Add(carteira);
             return carteira;
         }
     }

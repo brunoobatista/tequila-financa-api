@@ -10,7 +10,7 @@ namespace Tequila.Models
         [Column("id")]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public long? Id { get; set; }
         [Column("rua")]
         public string Rua { get; set; }
         [Column("cep")]
