@@ -45,16 +45,41 @@ namespace Tequila.Repositories
 
         public TEntity Add(TEntity entity)
         {
-            this.context.Set<TEntity>().Add(entity);
-            this.context.SaveChanges();
-            return entity;
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    this.context.Set<TEntity>().Add(entity);
+                    this.context.SaveChanges();
+                    transaction.Commit();
+                    return entity;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw new Exception(e.Message);
+                }
+            }
         }
 
         public TEntity Update(TEntity entity)
         {
-            this.context.Entry(entity).State = EntityState.Modified;
-            this.context.SaveChanges();
-            return entity;
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    entity.AlteradoEm = DateTime.Now;
+                    this.context.Entry(entity).State = EntityState.Modified;
+                    this.context.SaveChanges();
+                    transaction.Commit();
+                    return entity;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw new Exception(e.Message);
+                }
+            }
         }
 
         public TEntity Delete(long id)
@@ -66,9 +91,21 @@ namespace Tequila.Repositories
                 return entity;
             }
 
-            this.context.Set<TEntity>().Remove(entity);
-            this.context.SaveChanges();
-            return entity;
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    this.context.Set<TEntity>().Remove(entity);
+                    this.context.SaveChanges();
+                    transaction.Commit();
+                    return entity;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw new Exception(e.Message);
+                }
+            }
         }
     }
 }

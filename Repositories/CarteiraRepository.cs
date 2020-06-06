@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Tequila.Models;
+using Tequila.Models.Enum;
 
 namespace Tequila.Repositories
 {
@@ -15,25 +15,44 @@ namespace Tequila.Repositories
             _context = context;
         }
 
-        public IEnumerable GetAllCarteirasByUsuario(long IdUsuario)
+        public IEnumerable<Carteira> GetAllCarteirasByUsuario(long IdUsuario)
         {
-            throw new NotImplementedException();
+            return _context.Carteira
+                        .AsNoTracking()
+                        .Where(c => c.UsuarioId == IdUsuario && c.StatusId == (int) STATUS.ABERTO)
+                        .ToList();
+
         }
 
+        public bool hasCarteiraAtiva(long usuarioId)
+        {
+            return _context.Carteira
+                .AsNoTracking()
+                .Any(c => c.UsuarioId == usuarioId && c.StatusId == (int)STATUS.ABERTO);
+        }
+        
         public Carteira GetCarteira(long Id)
-        {
-            return _context.Carteira.Find(Id);
+        { 
+            return Get(Id);
         }
 
-        public Carteira GetCarteiraAtiva(long IdUsuario)
+        public Carteira GetCarteiraAtivaByUsuario(long IdUsuario)
         {
-            throw new NotImplementedException();
-        }
-
-        public Carteira Salvar(Carteira carteira)
-        {
-            Add(carteira);
+            Carteira carteira = _context.Carteira
+                                    // .Include(c => c.Status)
+                                    .AsNoTracking()
+                                    .Where(c => c.UsuarioId == IdUsuario && c.StatusId == (int) STATUS.ABERTO)
+                                    .OrderByDescending(c => c.Id)
+                                    .FirstOrDefault();
             return carteira;
+        }
+
+        public Carteira getUltimaCarteira()
+        {
+            return _context.Carteira
+                .AsNoTracking()
+                .OrderByDescending(c => c.Id)
+                .FirstOrDefault();
         }
     }
 }

@@ -28,6 +28,10 @@ namespace Tequila
                     .HasOne(u => u.Endereco)
                     .WithOne()
                     .HasForeignKey<Usuario>(u => u.EnderecoId);
+
+            builder.Entity<Carteira>()
+                .HasOne(c => c.Status)
+                .WithMany();
         }
 
         public DbSet<Endereco> Endereco { get; set; }

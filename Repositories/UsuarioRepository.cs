@@ -2,11 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Reflection;
 using Tequila.Models;
 using Tequila.Models.DTOs;
-using Tequila.Repositories;
-using Tequila.Repositories.Interfaces;
 using Tequila.Services;
 
 namespace Tequila.Repositories
@@ -27,47 +24,41 @@ namespace Tequila.Repositories
             var mapper = config.CreateMapper();
             
             Usuario usuario = mapper.Map<Usuario>(usuarioDto);
-            
-            using (var transaction = context.Database.BeginTransaction())
+
+            try
             {
-                try
+                if (usuarioDto.endereco != null)
                 {
-                    if (usuarioDto.endereco != null)
-                    {
-                        Endereco endereco = usuarioDto.endereco;
-                        if (endereco.Id == null)
-                            context.Endereco.Add(endereco);
-                        else
-                            context.Endereco.Update(endereco); 
-                        context.SaveChanges();
-                        usuario.EnderecoId = endereco.Id;
-                    }
-
-                    usuario.AlteradoEm = DateTime.UtcNow;
-                    context.Entry(usuario).State = EntityState.Modified;
-                    
-                    // Type type = typeof(Usuario);
-                    // PropertyInfo[] properties = type.GetProperties();
-                    // foreach (PropertyInfo property in properties)
-                    // {
-                    //     if (property.PropertyType == typeof(Endereco))
-                    //         continue;
-                    //     
-                    //     if (property.GetValue(usuario, null) == null)
-                    //     {
-                    //         context.Entry(usuario).Property(property.Name).IsModified = false;
-                    //     }
-                    // }
+                    Endereco endereco = usuarioDto.endereco;
+                    if (endereco.Id == null)
+                        context.Endereco.Add(endereco);
+                    else
+                        context.Endereco.Update(endereco); 
                     context.SaveChanges();
-
-                    transaction.Commit();
-
-                    return usuario;
-                } catch(Exception e)
-                {
-                    transaction.Rollback();
-                    throw new Exception(e.Message);
+                    usuario.EnderecoId = endereco.Id;
                 }
+
+                usuario.AlteradoEm = DateTime.UtcNow;
+                context.Entry(usuario).State = EntityState.Modified;
+                
+                // Type type = typeof(Usuario);
+                // PropertyInfo[] properties = type.GetProperties();
+                // foreach (PropertyInfo property in properties)
+                // {
+                //     if (property.PropertyType == typeof(Endereco))
+                //         continue;
+                //     
+                //     if (property.GetValue(usuario, null) == null)
+                //     {
+                //         context.Entry(usuario).Property(property.Name).IsModified = false;
+                //     }
+                // }
+                context.SaveChanges();
+                
+                return usuario;
+            } catch(Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
 
@@ -80,31 +71,25 @@ namespace Tequila.Repositories
 
             if (usuario.Senha == null)
                 throw new ArgumentNullException(paramName: "Senha", message: "Senha náo pode estar vazia");
-
-            using (var transaction = context.Database.BeginTransaction())
+            
+            try
             {
-                try
-                {
-                    // if (usuarioDto.endereco != null)
-                    // {
-                    //     Endereco endereco = usuarioDto.endereco;
-                    //     context.Endereco.Add(endereco);
-                    //     context.SaveChanges();
-                    //     usuario.EnderecoId = endereco.Id;
-                    // }
+                // if (usuarioDto.endereco != null)
+                // {
+                //     Endereco endereco = usuarioDto.endereco;
+                //     context.Endereco.Add(endereco);
+                //     context.SaveChanges();
+                //     usuario.EnderecoId = endereco.Id;
+                // }
 
-                    usuario.Senha = HashService.GenerateHash(usuario.Senha);
+                usuario.Senha = HashService.GenerateHash(usuario.Senha);
 
-                    Add(usuario);
+                Add(usuario);
 
-                    transaction.Commit();
-
-                    return usuario;
-                } catch(Exception e)
-                {
-                    transaction.Rollback();
-                    throw new Exception(e.Message);
-                }
+                return usuario;
+            } catch(Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
 

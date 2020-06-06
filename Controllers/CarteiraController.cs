@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Tequila.Repositories.Interfaces;
 
 using Tequila.Models;
 using System;
+using Tequila.Models.DTOs;
 using Tequila.Repositories;
 using Tequila.Services;
-using Tequila.Services.Interfaces;
 
 namespace Tequila.Controllers
 {
@@ -16,20 +15,18 @@ namespace Tequila.Controllers
     public class CarteiraController : ControllerBase
     {
         private readonly CarteiraService carteiraService;
-        private readonly CarteiraRepository carteiraRepository;
 
         public CarteiraController(CarteiraService carteiraService, CarteiraRepository carteiraRepository)
         {
             this.carteiraService = carteiraService;
-            this.carteiraRepository = carteiraRepository;
         }
 
         [HttpPost("nova")]
-        public IActionResult CriarNova([FromBody] Carteira carteira)
+        public ActionResult<Carteira> CriarNova([FromBody] CarteiraDTO carteiraDTO)
         {
             try 
             {
-                Carteira carteiraSalva = this.carteiraService.Salvar(carteira);
+                Carteira carteiraSalva = this.carteiraService.Salvar(carteiraDTO);
                 return Ok(carteiraSalva);
             }
             catch(Exception e)
@@ -37,13 +34,13 @@ namespace Tequila.Controllers
                 return BadRequest(e.Message);
             }
         }
-
-        [HttpGet("{id}")]
-        public ActionResult<Carteira> GetCarteiraById([FromRoute] long Id)
+        
+        [HttpPost("aberta")]
+        public ActionResult<CarteiraDTO> GetCarteira([FromBody] CarteiraDTO carteiraDto)
         {
             try
             {
-                Carteira carteira = this.carteiraService.GetById(Id);
+                CarteiraDTO carteira = this.carteiraService.GetCarteiraAtivaByUsuario(carteiraDto.usuarioId);
                 return Ok(carteira);
             }
             catch (Exception e)
@@ -51,6 +48,63 @@ namespace Tequila.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPost("finalizar")]
+        public ActionResult finalizarCarteira([FromBody] CarteiraDTO carteiraDto)
+        {
+            try
+            {
+                this.carteiraService.finalizarCarteira(carteiraDto);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpPost("cancelar")]
+        public ActionResult cancelarCarteira([FromBody] CarteiraDTO carteiraDto)
+        {
+            try
+            {
+                throw new NotSupportedException("Função não permitida");
+                this.carteiraService.cancelarCarteira(carteiraDto);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpPost("reativar")]
+        public ActionResult reativarCarteira([FromBody] CarteiraDTO carteiraDto)
+        {
+            try
+            {
+                Carteira carteira = this.carteiraService.reativarCarteira(carteiraDto);
+                return Ok(carteira);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        // [HttpGet("{id}")]
+        // public ActionResult<Carteira> GetCarteiraById([FromRoute] long Id)
+        // {
+        //     try
+        //     {
+        //         Carteira carteira = this.carteiraService.GetById(Id);
+        //         return Ok(carteira);
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return BadRequest(e.Message);
+        //     }
+        // }
 
     }
 }
