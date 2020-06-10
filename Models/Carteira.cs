@@ -36,7 +36,7 @@ namespace Tequila.Models
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("criado_em")]
-        public DateTime CriadoEm { get; set; }
+        public DateTime? CriadoEm { get; set; }
 
         [Column("alterado_em")]
         public DateTime? AlteradoEm { get; set; }

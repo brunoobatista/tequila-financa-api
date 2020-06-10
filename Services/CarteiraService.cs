@@ -84,8 +84,8 @@ namespace Tequila.Services
             {
                 DateTime now = DateTime.Now;
 
-                if (ultimaCarteira.CriadoEm.Month == now.Month &&
-                    ultimaCarteira.CriadoEm.Year == now.Year)
+                if (ultimaCarteira.CriadoEm?.Month == now.Month &&
+                    ultimaCarteira.CriadoEm?.Year == now.Year)
                 {
                     ultimaCarteira.StatusId = (int)STATUS.ABERTO;
 
