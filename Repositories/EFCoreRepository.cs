@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Tequila.Models.Interfaces;
 using Tequila.Repositories.Interfaces;
@@ -30,7 +31,7 @@ namespace Tequila.Repositories
         {
             var query = this.context.Set<TEntity>().AsQueryable();
 
-            return this.context.Set<TEntity>().SingleOrDefault(e => e.Ativo == 1 && e.Id == id);
+            return context.Set<TEntity>().FirstOrDefault(e => e.Ativo == 1 && e.Id == id);
         }
 
         // public TEntity Get(Expression<Func<TEntity, bool>> predicate, params string[] navigationProperties)
@@ -49,8 +50,8 @@ namespace Tequila.Repositories
             {
                 try
                 {
-                    this.context.Set<TEntity>().Add(entity);
-                    this.context.SaveChanges();
+                    context.Set<TEntity>().Add(entity);
+                    context.SaveChanges();
                     transaction.Commit();
                     return entity;
                 }
@@ -69,10 +70,46 @@ namespace Tequila.Repositories
                 try
                 {
                     entity.AlteradoEm = DateTime.Now;
-                    this.context.Entry(entity).State = EntityState.Modified;
-                    this.context.SaveChanges();
+                    context.Entry(entity).State = EntityState.Modified;
+                    Type type = entity.GetType();
+                    PropertyInfo[] properties = type.GetProperties();
+                    foreach (PropertyInfo property in properties)
+                    {
+                        if (property.PropertyType.GetInterfaces().Contains(typeof(IBase)) )
+                            continue;
+                        
+                        if (property.GetValue(entity, null) == null)
+                        {
+                            context.Entry(entity).Property(property.Name).IsModified = false;
+                        }
+                    }
+                    context.SaveChanges();
                     transaction.Commit();
                     return entity;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw new Exception(e.Message);
+                }
+            }
+        }
+        
+        public void Inactive(long id)
+        {
+            var entity = context.Set<TEntity>().Find(id);
+
+            if (entity == null) return;
+
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    entity.Ativo = 0;
+                    entity.AlteradoEm = DateTime.Now;
+                    context.Entry(entity).State = EntityState.Modified;
+                    context.SaveChanges();
+                    transaction.Commit();
                 }
                 catch (Exception e)
                 {
@@ -84,7 +121,7 @@ namespace Tequila.Repositories
 
         public TEntity Delete(long id)
         {
-            var entity = this.context.Set<TEntity>().Find(id);
+            var entity = context.Set<TEntity>().Find(id);
 
             if (entity == null)
             {
@@ -95,8 +132,8 @@ namespace Tequila.Repositories
             {
                 try
                 {
-                    this.context.Set<TEntity>().Remove(entity);
-                    this.context.SaveChanges();
+                    context.Set<TEntity>().Remove(entity);
+                    context.SaveChanges();
                     transaction.Commit();
                     return entity;
                 }

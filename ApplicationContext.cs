@@ -32,8 +32,13 @@ namespace Tequila
             builder.Entity<Carteira>()
                 .HasOne(c => c.Status)
                 .WithMany();
-        }
 
+            builder.Entity<DespesasFixas>()
+                .HasOne(d => d.Usuario)
+                .WithMany();
+        }
+        
+        public DbSet<DespesasFixas> DespesasFixas { get; set; }
         public DbSet<Endereco> Endereco { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
         public DbSet<Carteira> Carteira { get; set; }

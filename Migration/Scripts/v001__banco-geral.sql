@@ -148,16 +148,22 @@ CREATE TABLE IF NOT EXISTS public.DespesasFixas (
   usuario_id BIGINT NOT NULL,
   descricao VARCHAR(255) NOT NULL,
   valor_previsto NUMERIC(15,2) NULL,
-  parcela_de INT NULL,
+  parcela_atual INT NULL,
   total_parcelas INT NULL,
   data_vencimento timestamp(0) NULL,
   criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
   alterado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
+  status_id INT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   CONSTRAINT fk_usuario_despesafx_id
     FOREIGN KEY (usuario_id)
     REFERENCES public.Usuario (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_status_carteira_id
+    FOREIGN KEY (status_id)
+    REFERENCES public.Status (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ;
@@ -179,7 +185,7 @@ CREATE TABLE IF NOT EXISTS public.DespesaFixa (
   valor_previsto NUMERIC(15,2) NULL,
   valor NUMERIC(15,2) NULL,
   total_parcelas INT NULL,
-  parcela_de INT NULL,
+  parcela_atual INT NULL,
   data_vencimento timestamp(0) NULL,
   criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
   alterado_em TIMESTAMP(0) NULL,

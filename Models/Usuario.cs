@@ -64,6 +64,6 @@ namespace Tequila.Models
 
         [JsonIgnore]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("ativo")] public int Ativo { get; set; }
+        [Column("ativo")] public int? Ativo { get; set; }
     }
 }

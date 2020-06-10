@@ -8,9 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Tequila.Repositories;
-using Tequila.Repositories.Interfaces;
 using Tequila.Services;
-using Tequila.Services.Interfaces;
 
 namespace Tequila
 {
@@ -39,9 +37,11 @@ namespace Tequila
 
             services.AddScoped<CarteiraRepository>();
             services.AddScoped<UsuarioRepository>();
+            services.AddScoped<DespesasFixasRepository>();
 
             services.AddScoped<TokenService>();
             services.AddScoped<CarteiraService>();
+            services.AddScoped<DespesasFixasService>();
 
 
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
