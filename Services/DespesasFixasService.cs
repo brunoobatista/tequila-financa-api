@@ -10,23 +10,24 @@ namespace Tequila.Services
 {
     public class DespesasFixasService : IDespesasFixasService
     {
-        private readonly DespesasFixasRepository despesasFixasRepository;
+        private readonly DespesasFixasRepository _despesasFixasRepository;
 
         public DespesasFixasService(DespesasFixasRepository despesasFixasRepository)
         {
-            this.despesasFixasRepository = despesasFixasRepository;
+            _despesasFixasRepository = despesasFixasRepository;
         }
         
         public DespesasFixas salvar(DespesasFixasDTO despesasFixasDto)
         {
             DespesasFixas despesasFixas = mapper(despesasFixasDto);
 
-            if (despesasFixas.TotalParcelas != null)
-            {
-                despesasFixas.ParcelaAtual = 1;
-            }
+            // if (despesasFixas.TotalParcelas != null)
+            // {
+            //     despesasFixas.ParcelaAtual = 1;
+            // }
 
-            despesasFixasRepository.Add(despesasFixas);
+            _despesasFixasRepository.criarDespesasFixas(despesasFixasDto);
+            // _despesasFixasRepository.Add(despesasFixas);
             return despesasFixas;
         }
 
@@ -34,16 +35,16 @@ namespace Tequila.Services
         {
             DespesasFixas despesasFixas = mapper(despesasFixasDto);
 
-            return despesasFixasRepository.Update(despesasFixas);
+            return _despesasFixasRepository.Update(despesasFixas);
         }
         
         public DespesasFixas finalizar(DespesasFixasDTO despesasFixasDto)
         {
-            DespesasFixas despesasFixas = despesasFixasRepository.Get(despesasFixasDto.Id);
+            DespesasFixas despesasFixas = _despesasFixasRepository.Get(despesasFixasDto.Id);
             if (despesasFixas.StatusId != (int) STATUS.ABERTO)
                 throw new VerificationException("Despesa Fixa não está aberta");
             despesasFixas.StatusId = (int) STATUS.FINALIZADO;
-            despesasFixasRepository.Update(despesasFixas);
+            _despesasFixasRepository.Update(despesasFixas);
             return despesasFixas;
         }
         
@@ -54,7 +55,7 @@ namespace Tequila.Services
          */
         public void remover(long idDespesasFixas)
         {
-            despesasFixasRepository.Inactive(idDespesasFixas);
+            _despesasFixasRepository.Inactive(idDespesasFixas);
         }
 
         private DespesasFixas mapper(DespesasFixasDTO despesasFixasDto)

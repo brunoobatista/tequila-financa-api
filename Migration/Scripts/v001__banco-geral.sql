@@ -18,6 +18,16 @@ CREATE TABLE IF NOT EXISTS public.Status (
   PRIMARY KEY (id))
 ;
 
+-- -----------------------------------------------------
+-- Table public.Tipo
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS public.Tipo CASCADE;
+
+CREATE TABLE IF NOT EXISTS public.Tipo (
+  id INT NOT NULL,
+  nome VARCHAR(45) NOT NULL,
+  PRIMARY KEY (id))
+;
 
 -- -----------------------------------------------------
 -- Table public.Endereco
@@ -155,6 +165,7 @@ CREATE TABLE IF NOT EXISTS public.DespesasFixas (
   alterado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
   status_id INT NOT NULL DEFAULT 1,
+  tipo_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_usuario_despesafx_id
     FOREIGN KEY (usuario_id)
@@ -165,8 +176,13 @@ CREATE TABLE IF NOT EXISTS public.DespesasFixas (
     FOREIGN KEY (status_id)
     REFERENCES public.Status (id)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-;
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_tipo_carteira_id
+    FOREIGN KEY (tipo_id)
+    REFERENCES public.Tipo (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
 
 CREATE INDEX IF NOT EXISTS fk_usuario_despesasfxs_idx ON public.DespesasFixas (usuario_id ASC);
 
@@ -180,7 +196,7 @@ CREATE SEQUENCE IF NOT EXISTS public.DespesaFixa_seq;
 CREATE TABLE IF NOT EXISTS public.DespesaFixa (
   id BIGINT NOT NULL DEFAULT NEXTVAL ('public.DespesaFixa_seq'),
   carteira_id BIGINT NOT NULL,
-  listafixadespesas_id BIGINT NOT NULL,
+  despesasfixas_id BIGINT NOT NULL,
   descricao VARCHAR(255) NOT NULL,
   valor_previsto NUMERIC(15,2) NULL,
   valor NUMERIC(15,2) NULL,
@@ -190,22 +206,23 @@ CREATE TABLE IF NOT EXISTS public.DespesaFixa (
   criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
   alterado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
-  PRIMARY KEY (id, listafixadespesas_id),
+  PRIMARY KEY (id),
   CONSTRAINT fk_carteira_despesafx_id
     FOREIGN KEY (carteira_id)
     REFERENCES public.Carteira (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT fk_listafixadespesa_despesafx_id
-    FOREIGN KEY (listafixadespesas_id)
+  CONSTRAINT fk_despesasfixas_id_despesafx_id
+    FOREIGN KEY (despesasfixas_id)
     REFERENCES public.DespesasFixas (id)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-;
+    ON UPDATE NO ACTION,
+  UNIQUE(carteira_id,despesasfixas_id)
+);
 
 CREATE INDEX IF NOT EXISTS fk_carteira_despesafx_idx ON public.DespesaFixa (carteira_id ASC);
 
-CREATE INDEX IF NOT EXISTS fk_listafixadespesa_despesafx_idx ON public.DespesaFixa (listafixadespesas_id ASC);
+CREATE INDEX IF NOT EXISTS fk_listafixadespesa_despesafx_idx ON public.DespesaFixa (despesasfixas_id ASC);
 
 -- -----------------------------------------------------
 -- Table public.DespesaVariavel
@@ -261,7 +278,7 @@ INSERT INTO public.Endereco (id, rua, cep, numero, complemento) VALUES (1, 'Rua 
 -- -----------------------------------------------------
 -- Data for table public.Usuario
 -- -----------------------------------------------------
-INSERT INTO public.Usuario (id, email, senha, nome, avatar, cpf_cnpj, renda, tipo_renda,endereco_id) 
+INSERT INTO public.Usuario (id, email, senha, nome, avatar, cpf_cnpj, renda, tipo_renda,endereco_id)
                     VALUES (1, 'brunoliveirabatista@gmail.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Bruno Batista', '', '', 1650.00, '',1);
 
 
@@ -271,3 +288,9 @@ INSERT INTO public.Usuario (id, email, senha, nome, avatar, cpf_cnpj, renda, tip
 INSERT INTO public.Status (id, nome) VALUES (1, 'ABERTO');
 INSERT INTO public.Status (id, nome) VALUES (2, 'FINALIZADO');
 INSERT INTO public.Status (id, nome) VALUES (0, 'CANCELADO');
+
+-- -----------------------------------------------------
+-- Data for table public.Tipo
+-- -----------------------------------------------------
+INSERT INTO public.Tipo (id, nome) VALUES (1, 'CONTINUO');
+INSERT INTO public.Tipo (id, nome) VALUES (2, 'PARCELADO');

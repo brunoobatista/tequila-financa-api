@@ -47,6 +47,16 @@ namespace Tequila.Repositories
             return carteira;
         }
 
+        public ICollection<Carteira> getCarteirasByUsuario(long usuarioId)
+        {
+            ICollection<Carteira> carteiras = _context.Carteira
+                .AsNoTracking()
+                .Where(c => c.UsuarioId == usuarioId && c.Ativo == 1)
+                .OrderByDescending(c => c.CriadoEm)
+                .ToList();
+            return carteiras;
+        }
+
         public Carteira getUltimaCarteira()
         {
             return _context.Carteira

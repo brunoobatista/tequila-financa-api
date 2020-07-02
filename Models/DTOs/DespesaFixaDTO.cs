@@ -2,14 +2,15 @@
 
 namespace Tequila.Models.DTOs
 {
-    public class DespesasFixasDTO
+    public class DespesaFixaDTO
     {
         public long Id { get; set; }
-        public long UsuarioId { get; set; }
-        public int? StatusId { get; set; }
-        public int TipoId { get; set; }
+        public long CarteiraId { get; set; }
+        public long DespesasFixasId { get; set; }
         
         public string Descricao { get; set; }
+
+        public decimal? Valor { get; set; }
 
         public decimal? ValorPrevisto { get; set; }
 

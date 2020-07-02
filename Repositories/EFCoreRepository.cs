@@ -13,25 +13,25 @@ namespace Tequila.Repositories
         where TEntity : class, IEntity
         where TContext : DbContext
     {
-        private readonly TContext context;
+        private readonly TContext _context;
 
         public EFCoreRepository(TContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
         public List<TEntity> GetAll()
         {
-            var query = this.context.Set<TEntity>().AsQueryable();
+            var query = _context.Set<TEntity>().AsQueryable();
 
             return query.Where(e => e.Ativo == 1).AsNoTracking().ToList();
         }
         
         public TEntity Get(long id)
         {
-            var query = this.context.Set<TEntity>().AsQueryable();
+            var query = _context.Set<TEntity>().AsQueryable();
 
-            return context.Set<TEntity>().FirstOrDefault(e => e.Ativo == 1 && e.Id == id);
+            return _context.Set<TEntity>().AsNoTracking().FirstOrDefault(e => e.Ativo == 1 && e.Id == id);
         }
 
         // public TEntity Get(Expression<Func<TEntity, bool>> predicate, params string[] navigationProperties)
@@ -46,12 +46,12 @@ namespace Tequila.Repositories
 
         public TEntity Add(TEntity entity)
         {
-            using (var transaction = context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    context.Set<TEntity>().Add(entity);
-                    context.SaveChanges();
+                    _context.Set<TEntity>().Add(entity);
+                    _context.SaveChanges();
                     transaction.Commit();
                     return entity;
                 }
@@ -65,12 +65,12 @@ namespace Tequila.Repositories
 
         public TEntity Update(TEntity entity)
         {
-            using (var transaction = context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
                     entity.AlteradoEm = DateTime.Now;
-                    context.Entry(entity).State = EntityState.Modified;
+                    _context.Entry(entity).State = EntityState.Modified;
                     Type type = entity.GetType();
                     PropertyInfo[] properties = type.GetProperties();
                     foreach (PropertyInfo property in properties)
@@ -80,10 +80,10 @@ namespace Tequila.Repositories
                         
                         if (property.GetValue(entity, null) == null)
                         {
-                            context.Entry(entity).Property(property.Name).IsModified = false;
+                            _context.Entry(entity).Property(property.Name).IsModified = false;
                         }
                     }
-                    context.SaveChanges();
+                    _context.SaveChanges();
                     transaction.Commit();
                     return entity;
                 }
@@ -97,18 +97,18 @@ namespace Tequila.Repositories
         
         public void Inactive(long id)
         {
-            var entity = context.Set<TEntity>().Find(id);
+            var entity = _context.Set<TEntity>().Find(id);
 
             if (entity == null) return;
 
-            using (var transaction = context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
                     entity.Ativo = 0;
                     entity.AlteradoEm = DateTime.Now;
-                    context.Entry(entity).State = EntityState.Modified;
-                    context.SaveChanges();
+                    _context.Entry(entity).State = EntityState.Modified;
+                    _context.SaveChanges();
                     transaction.Commit();
                 }
                 catch (Exception e)
@@ -121,19 +121,19 @@ namespace Tequila.Repositories
 
         public TEntity Delete(long id)
         {
-            var entity = context.Set<TEntity>().Find(id);
+            var entity = _context.Set<TEntity>().Find(id);
 
             if (entity == null)
             {
                 return entity;
             }
 
-            using (var transaction = context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    context.Set<TEntity>().Remove(entity);
-                    context.SaveChanges();
+                    _context.Set<TEntity>().Remove(entity);
+                    _context.SaveChanges();
                     transaction.Commit();
                     return entity;
                 }

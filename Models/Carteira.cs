@@ -19,13 +19,13 @@ namespace Tequila.Models
         [ForeignKey("StatusId")]
         public Status Status { get; set; }
 
-        [Required, Column("usuario_id")]
+        [Required(ErrorMessage = "Necessário informar usuário"), Column("usuario_id")]
         public long UsuarioId { get; set; }
 
         public virtual Usuario Usuario { get; set; }
 
         [Column("renda")]
-        [Required]
+        [Required(ErrorMessage = "Necessároo informar renda inicial")]
         public decimal Renda { get; set; }
 
         [Column("renda_extra")]

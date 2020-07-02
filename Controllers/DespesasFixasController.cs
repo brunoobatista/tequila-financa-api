@@ -15,13 +15,13 @@ namespace Tequila.Controllers
     [Route("despesas-fixas")]
     public class DespesasFixasController : ControllerBase
     {
-        private readonly DespesasFixasService despesasFixasService;
-        private readonly DespesasFixasRepository despesasFixasRepository;
+        private readonly DespesasFixasService _despesasFixasService;
+        private readonly DespesasFixasRepository _despesasFixasRepository;
 
         public DespesasFixasController(DespesasFixasService despesasFixasService, DespesasFixasRepository despesasFixasRepository)
         {
-            this.despesasFixasService = despesasFixasService;
-            this.despesasFixasRepository = despesasFixasRepository;
+            _despesasFixasService = despesasFixasService;
+            _despesasFixasRepository = despesasFixasRepository;
         }
     
         [HttpGet("usuario/{idUsuario}")]
@@ -29,7 +29,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                List<DespesasFixas> despesasFixas = despesasFixasRepository.getDespesasFixasByUsuario(idUsuario);
+                List<DespesasFixas> despesasFixas = _despesasFixasRepository.getDespesasFixasByUsuario(idUsuario);
                 if (despesasFixas.Count == 0)
                     return NotFound();
 
@@ -46,7 +46,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                DespesasFixas despesasFixas = despesasFixasRepository.Get(id);
+                DespesasFixas despesasFixas = _despesasFixasRepository.Get(id);
                 if (despesasFixas == null)
                     return NotFound();
 
@@ -63,7 +63,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                DespesasFixas despesasFixas = despesasFixasService.salvar(despesasFixasDto);
+                DespesasFixas despesasFixas = _despesasFixasService.salvar(despesasFixasDto);
                 return Ok(despesasFixas);
             }
             catch (Exception e)
@@ -77,7 +77,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                DespesasFixas despesasFixas = despesasFixasService.atualizar(despesasFixasDto);
+                DespesasFixas despesasFixas = _despesasFixasService.atualizar(despesasFixasDto);
                 return Ok(despesasFixas);
             }
             catch (Exception e)
@@ -91,7 +91,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                DespesasFixas despesasFixas = despesasFixasService.finalizar(despesasFixasDto);
+                DespesasFixas despesasFixas = _despesasFixasService.finalizar(despesasFixasDto);
                 return Ok(despesasFixas);
             }
             catch (Exception e)

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using Tequila.Models;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Tequila.Models.DTOs;
 using Tequila.Repositories;
 using Tequila.Services;
@@ -14,19 +16,19 @@ namespace Tequila.Controllers
     [Route("carteiras")]
     public class CarteiraController : ControllerBase
     {
-        private readonly CarteiraService carteiraService;
+        private readonly CarteiraService _carteiraService;
 
         public CarteiraController(CarteiraService carteiraService, CarteiraRepository carteiraRepository)
         {
-            this.carteiraService = carteiraService;
+            _carteiraService = carteiraService;
         }
 
         [HttpPost("nova")]
-        public ActionResult<Carteira> CriarNova([FromBody] CarteiraDTO carteiraDTO)
+        public ActionResult<Carteira> nova([FromBody] CarteiraDTO carteiraDTO)
         {
             try 
             {
-                Carteira carteiraSalva = this.carteiraService.Salvar(carteiraDTO);
+                Carteira carteiraSalva = _carteiraService.Salvar(carteiraDTO);
                 return Ok(carteiraSalva);
             }
             catch(Exception e)
@@ -40,7 +42,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                CarteiraDTO carteira = this.carteiraService.GetCarteiraAtivaByUsuario(carteiraDto.usuarioId);
+                CarteiraDTO carteira = _carteiraService.GetCarteiraAtivaByUsuario(carteiraDto.usuarioId);
                 return Ok(carteira);
             }
             catch (Exception e)
@@ -54,7 +56,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                this.carteiraService.finalizarCarteira(carteiraDto);
+                _carteiraService.finalizarCarteira(carteiraDto);
                 return NoContent();
             }
             catch (Exception e)
@@ -69,8 +71,8 @@ namespace Tequila.Controllers
             try
             {
                 throw new NotSupportedException("Função não permitida");
-                this.carteiraService.cancelarCarteira(carteiraDto);
-                return NoContent();
+                // _carteiraService.cancelarCarteira(carteiraDto);
+                // return NoContent();
             }
             catch (Exception e)
             {
@@ -83,7 +85,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                Carteira carteira = this.carteiraService.reativarCarteira(carteiraDto);
+                Carteira carteira = _carteiraService.reativarCarteira(carteiraDto);
                 return Ok(carteira);
             }
             catch (Exception e)
@@ -92,19 +94,33 @@ namespace Tequila.Controllers
             }
         }
 
-        // [HttpGet("{id}")]
-        // public ActionResult<Carteira> GetCarteiraById([FromRoute] long Id)
-        // {
-        //     try
-        //     {
-        //         Carteira carteira = this.carteiraService.GetById(Id);
-        //         return Ok(carteira);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return BadRequest(e.Message);
-        //     }
-        // }
+        [HttpGet("{id}")]
+        public ActionResult<Carteira> GetCarteiraById([FromRoute] long Id)
+        {
+            try
+            {
+                Carteira carteira = _carteiraService.GetById(Id);
+                return Ok(carteira);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpPost]
+        public ActionResult<IEnumerable<Carteira>> GetCarteiraById([FromBody] CarteiraDTO carteiraDto)
+        {
+            try
+            {
+                ICollection<Carteira> carteiras = _carteiraService.getCarteirasByUsuario(carteiraDto.usuarioId);
+                return Ok(carteiras);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
     }
 }

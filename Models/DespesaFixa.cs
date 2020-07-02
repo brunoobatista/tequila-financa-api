@@ -1,35 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Tequila.Models.Interfaces;
 
 namespace Tequila.Models
 {
-    [Table("despesasfixas")]
-    public class DespesasFixas : IEntity
+    [Table("despesafixa")]
+    public class DespesaFixa : IEntity
     {
         [Key, Column("id")]
         public long Id { get; set; }
+
+        [Required(ErrorMessage = "Necessário informar a carteira"), Column("carteira_id")]
+        public long CarteiraId { get; set; }
+        public Carteira Carteira { get; set; }
         
-        [Required, Column("usuario_id")]
-        public long UsuarioId { get; set; }
-        public Usuario Usuario { get; set; }
-        
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("status_id")]
-        public int? StatusId { get; set; }
-        public Status Status { get; set; }
-        
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("tipo_id")]
-        public int TipoId { get; set; }
-        
-        public List<DespesaFixa> ListaDespesasFixas { get; set; }
-        
-        [Required, Column("descricao")]
+        [Required(ErrorMessage = "Necessário informar a Despesa Fixa"), Column("listafixadespesas_id")]
+        public long ListaDespesasFixasId { get; set; }
+        public DespesasFixas DespesasFixas { get; set; }
+
+        [Required(ErrorMessage = "Necessário descrisão"), Column("descricao")]
         public string Descricao { get; set; }
+        
+        [Column("valor")]
+        public decimal? Valor { get; set; }
         
         [Column("valor_previsto")]
         public decimal? ValorPrevisto { get; set; }

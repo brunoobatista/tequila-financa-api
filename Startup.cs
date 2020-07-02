@@ -38,10 +38,14 @@ namespace Tequila
             services.AddScoped<CarteiraRepository>();
             services.AddScoped<UsuarioRepository>();
             services.AddScoped<DespesasFixasRepository>();
+            services.AddScoped<RendaAdicionalRepository>();
+            services.AddScoped<DespesaVariavelRepository>();
 
             services.AddScoped<TokenService>();
             services.AddScoped<CarteiraService>();
             services.AddScoped<DespesasFixasService>();
+            services.AddScoped<RendaAdicionalService>();
+            services.AddScoped<DespesaVariavelService>();
 
 
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
