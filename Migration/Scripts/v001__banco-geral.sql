@@ -206,6 +206,7 @@ CREATE TABLE IF NOT EXISTS public.DespesaFixa (
   criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
   alterado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
+  tipo_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_carteira_despesafx_id
     FOREIGN KEY (carteira_id)
@@ -215,6 +216,11 @@ CREATE TABLE IF NOT EXISTS public.DespesaFixa (
   CONSTRAINT fk_despesasfixas_id_despesafx_id
     FOREIGN KEY (despesasfixas_id)
     REFERENCES public.DespesasFixas (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_tipo_carteira_id
+    FOREIGN KEY (tipo_id)
+    REFERENCES public.Tipo (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   UNIQUE(carteira_id,despesasfixas_id)

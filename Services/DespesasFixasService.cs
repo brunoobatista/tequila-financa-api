@@ -19,14 +19,14 @@ namespace Tequila.Services
         
         public DespesasFixas salvar(DespesasFixasDTO despesasFixasDto)
         {
-            DespesasFixas despesasFixas = mapper(despesasFixasDto);
+            // DespesasFixas despesasFixas = mapper(despesasFixasDto);
 
             // if (despesasFixas.TotalParcelas != null)
             // {
             //     despesasFixas.ParcelaAtual = 1;
             // }
 
-            _despesasFixasRepository.criarDespesasFixas(despesasFixasDto);
+            DespesasFixas despesasFixas = _despesasFixasRepository.criarDespesasFixas(despesasFixasDto);
             // _despesasFixasRepository.Add(despesasFixas);
             return despesasFixas;
         }
@@ -47,7 +47,6 @@ namespace Tequila.Services
             _despesasFixasRepository.Update(despesasFixas);
             return despesasFixas;
         }
-        
 
         /*
          * @TODO
