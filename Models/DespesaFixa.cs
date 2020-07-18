@@ -16,8 +16,8 @@ namespace Tequila.Models
         public long CarteiraId { get; set; }
         public Carteira Carteira { get; set; }
         
-        [Required(ErrorMessage = "Necessário informar a Despesa Fixa"), Column("listafixadespesas_id")]
-        public long ListaDespesasFixasId { get; set; }
+        [Required(ErrorMessage = "Necessário informar a Despesa Fixa"), Column("despesasfixas_id")]
+        public long DespesasFixasId { get; set; }
         public DespesasFixas DespesasFixas { get; set; }
 
         [Required(ErrorMessage = "Necessário descrisão"), Column("descricao")]

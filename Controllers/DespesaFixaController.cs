@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Tequila.Models.DTOs;
+using Tequila.Models;
 using Tequila.Services;
 
 public class ValorDTO
@@ -22,8 +23,37 @@ namespace Tequila.Controllers
         {
             _despesaFixaService = despesaFixaService;
         }
+        
+        [HttpGet("{id}")]
+        public ActionResult<DespesaFixa> getDespesa(long id)
+        {
+            try
+            {
+                DespesaFixa despesaFixa = _despesaFixaService.getById(id);
+                return Ok(despesaFixa);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
-        [Route("{idDespesa}/finalizar")]
+        [HttpGet("ativas")]
+        public ActionResult<IEnumerable<DespesaFixa>> getDespesas([FromQuery] long usuarioId,
+            [FromQuery] long carteiraId)
+        {
+            try
+            {
+                List<DespesaFixa> despesaFixas = _despesaFixaService.getDespesasAtivas(usuarioId, carteiraId);
+                return Ok(despesaFixas);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpPost("{idDespesa}/finalizar")]
         public IActionResult finalizar(long idDespesa, [FromBody] ValorDTO valorDto)
         {
             try

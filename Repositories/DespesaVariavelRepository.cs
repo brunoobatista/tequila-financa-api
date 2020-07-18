@@ -1,4 +1,7 @@
-﻿using Tequila.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Tequila.Models;
 
 namespace Tequila.Repositories
 {
@@ -9,6 +12,14 @@ namespace Tequila.Repositories
         public DespesaVariavelRepository(ApplicationContext context) : base(context)
         {
             _context = context;
+        }
+        
+        public List<DespesaVariavel> getListaCarteiraAtiva(long carteiraId)
+        {
+            return _context.DespesaVariavel
+                .AsNoTracking()
+                .Where(v => v.CarteiraId == carteiraId)
+                .ToList();
         }
     }
 }

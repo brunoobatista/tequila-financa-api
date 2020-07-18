@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
@@ -7,13 +9,21 @@ using Tequila.Models.DTOs;
 
 namespace Tequila.Repositories
 {
-    public class DespesaFixaRepository : EFCoreRepository<DespesaVariavel, ApplicationContext>
+    public class DespesaFixaRepository : EFCoreRepository<DespesaFixa, ApplicationContext>
     {
         private readonly ApplicationContext _context;
         
         public DespesaFixaRepository(ApplicationContext context) : base(context)
         {
             _context = context;
+        }
+
+        public List<DespesaFixa> getListaCarteiraAtiva(long carteiraId)
+        {
+            return _context.DespesaFixa
+                .AsNoTracking()
+                .Where(d => d.CarteiraId == carteiraId)
+                .ToList();
         }
 
         public bool finalizarDespesa(DespesaFixaDTO despesaFixaDto)

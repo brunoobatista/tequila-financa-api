@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Services;
-using Tequila.Services.Interfaces;
 
 namespace Tequila.Controllers
 {
@@ -21,7 +21,36 @@ namespace Tequila.Controllers
             _despesaVariavelService = despesaVariavelService;
         }
         
-        [Route("nova")]
+        [HttpGet("{id}")]
+        public ActionResult<DespesaVariavel> getDespesa(long id)
+        {
+            try
+            {
+                DespesaVariavel despesaVariavel = _despesaVariavelService.getById(id);
+                return Ok(despesaVariavel);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("ativas")]
+        public ActionResult<IEnumerable<DespesaVariavel>> getDespesas([FromQuery] long usuarioId,
+            [FromQuery] long carteiraId)
+        {
+            try
+            {
+                List<DespesaVariavel> despesaVariavels = _despesaVariavelService.getDespesasAtivas(usuarioId, carteiraId);
+                return Ok(despesaVariavels);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpPost("nova")]
         public ActionResult<DespesaVariavel> criarNova([FromBody] DespesaVariavelDTO despesaVariavelDto)
         {
             try

@@ -1,7 +1,9 @@
-﻿using System.Security;
+﻿using System.Collections.Generic;
+using System.Security;
 using AutoMapper;
 using Tequila.Models;
 using Tequila.Models.DTOs;
+using Tequila.Models.Enum;
 using Tequila.Repositories;
 using Tequila.Services.Interfaces;
 
@@ -9,10 +11,28 @@ namespace Tequila.Services
 {
     public class DespesaVariavelService : IDespesaVariavelService
     {
-        private DespesaVariavelRepository _despesaVariavelRepository;
-        public DespesaVariavelService(DespesaVariavelRepository despesaVariavelRepository)
+        private readonly DespesaVariavelRepository _despesaVariavelRepository;
+        private readonly CarteiraRepository _carteiraRepository;
+        public DespesaVariavelService(DespesaVariavelRepository despesaVariavelRepository, CarteiraRepository carteiraRepository)
         {
             _despesaVariavelRepository = despesaVariavelRepository;
+            _carteiraRepository = carteiraRepository;
+        }
+        
+        public DespesaVariavel getById(long id)
+        {
+            return _despesaVariavelRepository.Get(id);
+        }
+
+        public List<DespesaVariavel> getDespesasAtivas(long usuarioId, long carteiraId)
+        {
+            Carteira carteira = _carteiraRepository.Get(carteiraId);
+            if (carteira.UsuarioId == usuarioId && carteira.StatusId == (int)STATUS.ABERTO)
+            {
+                return _despesaVariavelRepository.getListaCarteiraAtiva(carteira.Id);
+            }
+
+            return new List<DespesaVariavel>();
         }
 
         public DespesaVariavel salvar(DespesaVariavelDTO despesaVariavelDto)
