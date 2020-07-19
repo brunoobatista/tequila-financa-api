@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Npgsql;
 using NpgsqlTypes;
 using Tequila.Models;
 using Tequila.Models.DTOs;
+using Tequila.Models.Enum;
 
 namespace Tequila.Repositories
 {
@@ -26,6 +28,13 @@ namespace Tequila.Repositories
                 .ToList();
         }
 
+        public List<DespesaFixa> getDespesaFixaContinuaPorCarteira(long idCarteira)
+        {
+            return _context.DespesaFixa.AsNoTracking()
+                .Where(e => e.CarteiraId == idCarteira && e.TipoId == (int)TIPO.CONTINUO)
+                .ToList();
+        }
+        
         public bool finalizarDespesa(DespesaFixaDTO despesaFixaDto)
         {
             int result = 0;

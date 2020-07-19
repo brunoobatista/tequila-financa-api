@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tequila.Models;
+using Tequila.Models.DTOs;
 using Tequila.Services;
 
 public class ValorDTO
@@ -30,6 +31,20 @@ namespace Tequila.Controllers
             try
             {
                 DespesaFixa despesaFixa = _despesaFixaService.getById(id);
+                return Ok(despesaFixa);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpPut("editar")]
+        public ActionResult<DespesaFixa> atualizar(DespesaFixaDTO despesaFixaDto)
+        {
+            try
+            {
+                DespesaFixa despesaFixa = _despesaFixaService.atualizar(despesaFixaDto);
                 return Ok(despesaFixa);
             }
             catch (Exception e)

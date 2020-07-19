@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AutoMapper;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Models.Enum;
@@ -21,6 +22,13 @@ namespace Tequila.Services
         {
             return _despesaFixaRepository.Get(id);
         }
+        
+        public DespesaFixa atualizar(DespesaFixaDTO despesaFixaDto)
+        {
+            DespesaFixa despesaFixa = mapper(despesaFixaDto);
+
+            return _despesaFixaRepository.Update(despesaFixa);
+        }
 
         public List<DespesaFixa> getDespesasAtivas(long usuarioId, long carteiraId)
         {
@@ -36,6 +44,14 @@ namespace Tequila.Services
         public bool finalizarDespesa(long idDespesa, decimal valor)
         {
             return _despesaFixaRepository.finalizarDespesa(new DespesaFixaDTO() {Id = idDespesa, Valor = valor});
+        }
+        
+        private DespesaFixa mapper(DespesaFixaDTO despesaFixaDto)
+        {
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<DespesaFixaDTO, DespesaFixa>());
+            var map = config.CreateMapper();
+
+            return map.Map<DespesaFixa>(despesaFixaDto);
         }
     }
 }

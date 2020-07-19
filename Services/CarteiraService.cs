@@ -15,11 +15,13 @@ namespace Tequila.Services
     {
         private readonly CarteiraRepository _carteiraRepository;
         private readonly UsuarioRepository _usuarioRepository;
+        private readonly DespesaFixaRepository _despesaFixaRepository;
 
-        public CarteiraService(CarteiraRepository carteiraRepository, UsuarioRepository usuarioRepository)
+        public CarteiraService(CarteiraRepository carteiraRepository, UsuarioRepository usuarioRepository, DespesaFixaRepository despesaFixaRepository)
         {
             _carteiraRepository = carteiraRepository;
             _usuarioRepository = usuarioRepository;
+            _despesaFixaRepository = despesaFixaRepository;
         }
 
         public Carteira GetById(long Id)
@@ -60,6 +62,13 @@ namespace Tequila.Services
             Carteira carteira = _carteiraRepository.GetCarteira(carteiraDto.Id);
             if (carteira.StatusId != (int) STATUS.ABERTO)
                 throw new VerificationException("Carteira não está aberta");
+
+            List<DespesaFixa> despesas = _despesaFixaRepository.getDespesaFixaContinuaPorCarteira(carteira.Id);
+
+            foreach (var despesa in despesas)
+                if (despesa.StatusId == (int)STATUS.ABERTO)
+                    throw new VerificationException("Carteira possui despesa(s) contínua(s) sem finalizar com valor final");
+
             carteira.StatusId = (int) STATUS.FINALIZADO;
             _carteiraRepository.Update(carteira);
         }
@@ -71,8 +80,9 @@ namespace Tequila.Services
         public void cancelarCarteira(CarteiraDTO carteiraDto)
         {
             Carteira carteira = _carteiraRepository.GetCarteira(carteiraDto.Id);
-            if (carteira.StatusId == (int) STATUS.ABERTO)
-                return;
+            List<DespesaFixa> despesas = _despesaFixaRepository.getListaCarteiraAtiva(carteira.Id);
+            if ((carteira.StatusId == (int)STATUS.FINALIZADO || carteira.StatusId == (int)STATUS.ABERTO) && despesas.Count > 0)
+                throw new VerificationException("Carteira já possui despesas vinculadas");
             carteira.StatusId = (int) STATUS.CANCELADO;
             _carteiraRepository.Update(carteira);
         }

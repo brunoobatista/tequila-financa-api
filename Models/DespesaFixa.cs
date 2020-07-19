@@ -23,6 +23,16 @@ namespace Tequila.Models
         [Required(ErrorMessage = "Necessário descrisão"), Column("descricao")]
         public string Descricao { get; set; }
         
+        [Column("tipo_id")]
+        public int TipoId { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("status_id")]
+        public int StatusId { get; set; }
+        
+        [ForeignKey("StatusId")]
+        public Status Status { get; set; }
+        
         [Column("valor")]
         public decimal? Valor { get; set; }
         
