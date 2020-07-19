@@ -6,8 +6,9 @@ namespace Tequila.Models.DTOs
     {
         public long Id { get; set; }
         public long UsuarioId { get; set; }
-        public int? StatusId { get; set; }
         public int TipoId { get; set; }
+        
+        public int? StatusId { get; set; }
         
         public string Descricao { get; set; }
 

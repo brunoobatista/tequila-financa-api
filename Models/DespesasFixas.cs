@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Microsoft.VisualBasic;
 using Tequila.Models.Interfaces;
 
 namespace Tequila.Models
@@ -12,7 +13,7 @@ namespace Tequila.Models
     {
         [Key, Column("id")]
         public long Id { get; set; }
-        
+
         [Required, Column("usuario_id")]
         public long UsuarioId { get; set; }
         public Usuario Usuario { get; set; }
@@ -22,12 +23,11 @@ namespace Tequila.Models
         public int? StatusId { get; set; }
         public Status Status { get; set; }
         
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("tipo_id")]
+        [Required, Column("tipo_id")]
         public int TipoId { get; set; }
         
-        public List<DespesaFixa> ListaDespesasFixas { get; set; }
-        
+        public ICollection<DespesaFixa> ListaDespesasFixas { get; set; }
+
         [Required, Column("descricao")]
         public string Descricao { get; set; }
         

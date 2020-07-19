@@ -62,7 +62,8 @@ namespace Tequila.Repositories
                 });
                 cmd.Parameters.Add(new NpgsqlParameter("total_parc", NpgsqlDbType.Integer){
                     Direction = ParameterDirection.InputOutput,
-                    Value = despesasFixasDto.TotalParcelas
+                    Value = (despesasFixasDto.TotalParcelas != null) ? despesasFixasDto.TotalParcelas : (object)DBNull.Value,
+                    IsNullable = true
                 });
                 cmd.Parameters.Add(new NpgsqlParameter("id_despesa", NpgsqlDbType.Bigint)
                 {

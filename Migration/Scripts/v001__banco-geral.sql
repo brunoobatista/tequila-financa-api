@@ -172,12 +172,12 @@ CREATE TABLE IF NOT EXISTS public.DespesasFixas (
     REFERENCES public.Usuario (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT fk_status_carteira_id
+  CONSTRAINT fk_status_despesasfixas_id
     FOREIGN KEY (status_id)
     REFERENCES public.Status (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT fk_tipo_carteira_id
+  CONSTRAINT fk_tipo_despesasfixas_id
     FOREIGN KEY (tipo_id)
     REFERENCES public.Tipo (id)
     ON DELETE NO ACTION
@@ -207,6 +207,7 @@ CREATE TABLE IF NOT EXISTS public.DespesaFixa (
   alterado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
   tipo_id INT NOT NULL,
+  status_id INT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   CONSTRAINT fk_carteira_despesafx_id
     FOREIGN KEY (carteira_id)
@@ -221,6 +222,11 @@ CREATE TABLE IF NOT EXISTS public.DespesaFixa (
   CONSTRAINT fk_tipo_carteira_id
     FOREIGN KEY (tipo_id)
     REFERENCES public.Tipo (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_status_despesafixa_id
+    FOREIGN KEY (status_id)
+    REFERENCES public.Status (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   UNIQUE(carteira_id,despesasfixas_id)
@@ -245,12 +251,19 @@ CREATE TABLE IF NOT EXISTS public.DespesaVariavel (
   criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
   alterado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
+  status_id INT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   CONSTRAINT fk_carteira_despesavrl_id
     FOREIGN KEY (carteira_id)
     REFERENCES public.Carteira (id)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_status_despesavariavel_id
+    FOREIGN KEY (status_id)
+    REFERENCES public.Status (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+    )
 ;
 
 CREATE INDEX IF NOT EXISTS fk_carteira_despesavrl_idx ON public.DespesaVariavel (carteira_id ASC);

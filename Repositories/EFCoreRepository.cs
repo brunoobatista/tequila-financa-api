@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using Tequila.Models.Interfaces;
 using Tequila.Repositories.Interfaces;
 
@@ -73,12 +74,17 @@ namespace Tequila.Repositories
                     _context.Entry(entity).State = EntityState.Modified;
                     Type type = entity.GetType();
                     PropertyInfo[] properties = type.GetProperties();
-                    foreach (PropertyInfo property in properties)
+                    foreach (var property in properties)
                     {
                         if (property.PropertyType.GetInterfaces().Contains(typeof(IBase)) )
                             continue;
-                        
-                        if (property.GetValue(entity, null) == null)
+
+                        if (property.PropertyType.IsGenericType &&
+                                property.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>))
+                        {
+                            _context.Entry(entity).Collection(property.Name).IsModified = false;
+                        }
+                        else if (property.GetValue(entity, null) == null)
                         {
                             _context.Entry(entity).Property(property.Name).IsModified = false;
                         }
