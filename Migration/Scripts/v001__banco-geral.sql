@@ -262,7 +262,7 @@ CREATE TABLE IF NOT EXISTS public.DespesaVariavel (
     FOREIGN KEY (status_id)
     REFERENCES public.Status (id)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE NO ACTION
     )
 ;
 
