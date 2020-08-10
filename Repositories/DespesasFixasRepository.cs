@@ -31,6 +31,8 @@ namespace Tequila.Repositories
         public DespesasFixas criarDespesasFixas(DespesasFixasDTO despesasFixasDto)
         {
             Carteira carteira = _carteiraRepository.GetCarteiraAtivaByUsuario(despesasFixasDto.UsuarioId);
+            if (carteira == null)
+                throw new NullReferenceException("Não foi encontrado nenhuma carteira ativa!");
 
             var conn = (NpgsqlConnection)_context.Database.GetDbConnection();
             conn.Open();

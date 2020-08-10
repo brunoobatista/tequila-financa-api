@@ -1,12 +1,4 @@
-﻿create or replace procedure inserirdespesasfixas(
-    INOUT usuario_id bigint,
-    INOUT carteira_id bigint,
-    INOUT descricao varchar,
-    INOUT valor_previsto numeric,
-    INOUT data_vencimento timestamp,
-    INOUT tipo_id timestamp,
-    INOUT id bigint
-)
+﻿create procedure inserirdespesasfixas(INOUT usuario_id bigint, INOUT carteira_id bigint, INOUT descri character varying, INOUT valor_prev numeric, INOUT data_venc timestamp without time zone, INOUT tipo_id integer, INOUT total_parc integer, INOUT id_despesa bigint)
     language plpgsql
 as
 $$
@@ -15,28 +7,29 @@ DECLARE
     v_carteira_valor numeric;
     novo_valor numeric;
 BEGIN
+
     CASE tipo_id
         when 1 then
             --              Primeiro será inseiro a despesas fixas
             INSERT INTO despesasfixas(usuario_id, descricao, valor_previsto, data_vencimento, tipo_id)
-            VALUES (usuario_id, descricao, valor_previsto, data_vencimento, tipo_id)
+            VALUES (usuario_id, descri, valor_prev, data_venc, tipo_id)
             RETURNING id INTO v_id;
 
-            id = v_id;
+            id_despesa = v_id;
             --             Depois sera criado a despesa fixa em si, e entao calcular o valor de despesa da carteira
 --             Esse valor deve ser temporario, o valor previsto sera retirado da carteira
 --             e depois adicionado o valor da finalização
-            INSERT INTO despesafixa(carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento)
-            VALUES (carteira_id, v_id, descricao, valor_previsto, data_vencimento);
+            INSERT INTO despesafixa(carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id)
+            VALUES (carteira_id, v_id, descri, valor_prev, data_venc, tipo_id);
 
         when 2 then
             INSERT INTO despesasfixas(usuario_id, descricao, valor_previsto, parcela_atual, total_parcelas, data_vencimento, tipo_id)
-            values(usuario_id, descricao, valor_previsto, 1, total_parcelas, data_vencimento, tipo_id)
+            values(usuario_id, descri, valor_prev, 1, total_parc, data_venc, tipo_id)
             RETURNING id INTO v_id;
-            id = v_id;
+            id_despesa = v_id;
 
-            INSERT INTO despesafixa(carteira_id, despesasfixas_id, descricao, valor, data_vencimento, parcela_atual, total_parcelas)
-            VALUES (carteira_id, v_id, descricao, valor_previsto, data_vencimento, 1, total_parcelas);
+            INSERT INTO despesafixa(carteira_id, despesasfixas_id, descricao, valor, data_vencimento, parcela_atual, total_parcelas, tipo_id)
+            VALUES (carteira_id, v_id, descri, valor_prev, data_venc, 1, total_parc, tipo_id);
 
         end case;
 
@@ -44,69 +37,20 @@ BEGIN
     IF v_carteira_valor is null then
         v_carteira_valor = 0;
     end if;
-    novo_valor = v_carteira_valor + valor_previsto;
+    novo_valor = v_carteira_valor + valor_prev;
     update carteira set despesa = novo_valor where id = carteira_id;
-    COMMIT;
+
 
 EXCEPTION WHEN OTHERS THEN
     RAISE exception '% %', SQLERRM, SQLSTATE;
-    ROLLBACK;
 END
 $$;
 
+alter procedure inserirdespesasfixas(inout bigint, inout bigint, inout varchar, inout numeric, inout timestamp, inout integer, inout integer, inout bigint) owner to postgres;
 
 
 
-create procedure inserirdespesasfixas(INOUT dp despesasfixastype)
-    language plpgsql
-as
-$$
-DECLARE
-    v_id bigint;
-    v_carteira_valor numeric;
-    novo_valor numeric;
-BEGIN
-    CASE dp.tipo_id
-        when 1 then
-            --              Primeiro será inseiro a despesas fixas
-            INSERT INTO despesasfixas(usuario_id, descricao, valor_previsto, data_vencimento, tipo_id)
-            VALUES (dp.usuario_id, dp.descricao, dp.valor_previsto, dp.data_vencimento, dp.tipo_id)
-            RETURNING id INTO v_id;
-
-            dp.id = v_id;
-            --             Depois sera criado a despesa fixa em si, e entao calcular o valor de despesa da carteira
---             Esse valor deve ser temporario, o valor previsto sera retirado da carteira
---             e depois adicionado o valor da finalização
-            INSERT INTO despesafixa(carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento)
-            VALUES (dp.carteira_id, v_id, dp.descricao, dp.valor_previsto, dp.data_vencimento);
-
-        when 2 then
-            INSERT INTO despesasfixas(usuario_id, descricao, valor_previsto, parcela_atual, total_parcelas, data_vencimento, tipo_id)
-            values(dp.usuario_id, dp.descricao, dp.valor_previsto, 1, dp.total_parcelas, dp.data_vencimento, dp.tipo_id)
-            RETURNING id INTO v_id;
-            dp.id = v_id;
-
-            INSERT INTO despesafixa(carteira_id, despesasfixas_id, descricao, valor, data_vencimento, parcela_atual, total_parcelas)
-            VALUES (dp.carteira_id, v_id, dp.descricao, dp.valor_previsto, dp.data_vencimento, 1, dp.total_parcelas);
-
-        end case;
-
-    select c.despesa into v_carteira_valor from carteira as c where c.id = dp.carteira_id;
-    IF v_carteira_valor is null then
-        v_carteira_valor = 0;
-    end if;
-    novo_valor = v_carteira_valor + dp.valor_previsto;
-    update carteira set despesa = novo_valor where id = dp.carteira_id;
-    COMMIT;
-
-EXCEPTION WHEN OTHERS THEN
-    RAISE exception '% %', SQLERRM, SQLSTATE;
-    ROLLBACK;
-END
-$$;
-
-
-create procedure finalizardespesacontinua(IN id_despesa bigint, IN valor_final numeric)
+create procedure finalizardespesacontinua(INOUT id_despesa bigint, INOUT valor_final numeric, INOUT result integer)
     language plpgsql
 as
 $$
@@ -125,17 +69,17 @@ begin
         select c.despesa into old_valor from carteira as c where c.id = v_id_cart;
         old_valor = old_valor  - valor_prev;
         new_valor = old_valor + valor_final;
-        update carteira set despesa = new_valor where id = v_id_cart;
-        COMMIT;
+        update despesafixa set valor = valor_final, valor_previsto = valor_final, alterado_em = now(), status_id = 2 where id = id_despesa;
+        update carteira set despesa = new_valor, alterado_em = now() where id = v_id_cart;
+        result = 1;
     end if;
 
 EXCEPTION WHEN OTHERS THEN
     RAISE exception '% %', SQLERRM, SQLSTATE;
-    ROLLBACK;
 end
 $$;
 
+alter procedure finalizardespesacontinua(inout bigint, inout numeric, inout integer) owner to postgres;
 
-alter procedure finalizardespesacontinua(bigint, numeric) owner to postgres;
 
 
