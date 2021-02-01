@@ -23,12 +23,14 @@ namespace Tequila.Controllers
             _carteiraService = carteiraService;
         }
 
-        [HttpPost("nova")]
-        public ActionResult<Carteira> nova([FromBody] CarteiraDTO carteiraDTO)
+        [HttpPost("usuario/{usuarioId}/nova")]
+        public ActionResult<Carteira> nova([FromRoute] long usuarioId)
         {
+            CarteiraDTO carteiraDto = new CarteiraDTO();
+            carteiraDto.usuarioId = usuarioId;
             try 
             {
-                Carteira carteiraSalva = _carteiraService.Salvar(carteiraDTO);
+                Carteira carteiraSalva = _carteiraService.Salvar(carteiraDto);
                 return Ok(carteiraSalva);
             }
             catch(Exception e)
@@ -37,9 +39,11 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpPost("aberta")]
-        public ActionResult<CarteiraDTO> GetCarteira([FromBody] CarteiraDTO carteiraDto)
+        [HttpGet("usuario/{usuarioId}/aberta")]
+        public ActionResult<CarteiraDTO> GetCarteira([FromRoute] long usuarioId)
         {
+            CarteiraDTO carteiraDto = new CarteiraDTO();
+            carteiraDto.usuarioId = usuarioId;
             try
             {
                 CarteiraDTO carteira = _carteiraService.GetCarteiraAtivaByUsuario(carteiraDto.usuarioId);
@@ -51,9 +55,11 @@ namespace Tequila.Controllers
             }
         }
 
-        [HttpPost("finalizar")]
-        public ActionResult finalizarCarteira([FromBody] CarteiraDTO carteiraDto)
+        [HttpPost("{id}/finalizar")]
+        public ActionResult finalizarCarteira([FromRoute] long id)
         {
+            CarteiraDTO carteiraDto = new CarteiraDTO();
+            carteiraDto.Id = id;
             try
             {
                 _carteiraService.finalizarCarteira(carteiraDto);
@@ -65,7 +71,7 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpPost("cancelar")]
+        [HttpPut("{id}/cancelar")]
         public ActionResult cancelarCarteira([FromBody] CarteiraDTO carteiraDto)
         {
             try
@@ -80,9 +86,11 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpPost("reativar")]
-        public ActionResult reativarCarteira([FromBody] CarteiraDTO carteiraDto)
+        [HttpPut("{id}/reativar")]
+        public ActionResult reativarCarteira([FromRoute] long id)
         {
+            CarteiraDTO carteiraDto = new CarteiraDTO();
+            carteiraDto.Id = id;
             try
             {
                 Carteira carteira = _carteiraService.reativarCarteira(carteiraDto);
@@ -108,9 +116,11 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpPost]
-        public ActionResult<IEnumerable<Carteira>> GetCarteiraById([FromBody] CarteiraDTO carteiraDto)
+        [HttpGet("usuario/{usuarioId}")]
+        public ActionResult<IEnumerable<Carteira>> GetCarteiraDoUsuarioById([FromRoute] long usuarioId)
         {
+            CarteiraDTO carteiraDto = new CarteiraDTO();
+            carteiraDto.usuarioId = usuarioId;
             try
             {
                 ICollection<Carteira> carteiras = _carteiraService.getCarteirasByUsuario(carteiraDto.usuarioId);

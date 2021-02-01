@@ -38,10 +38,12 @@ namespace Tequila.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
-        [HttpPut("editar")]
-        public ActionResult<DespesaFixa> atualizar(DespesaFixaDTO despesaFixaDto)
+
+        [HttpPut("{id}/editar")]
+        public ActionResult<DespesaFixa> atualizar([FromRoute] long id)
         {
+            DespesaFixaDTO despesaFixaDto = new DespesaFixaDTO();
+            despesaFixaDto.Id = id;
             try
             {
                 DespesaFixa despesaFixa = _despesaFixaService.atualizar(despesaFixaDto);

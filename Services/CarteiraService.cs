@@ -100,7 +100,7 @@ namespace Tequila.Services
                     ultimaCarteira.CriadoEm?.Year == now.Year)
                 {
                     ultimaCarteira.StatusId = (int)STATUS.ABERTO;
-
+                    _carteiraRepository.Update(ultimaCarteira);
                     return ultimaCarteira;
                 }
                 throw new ArgumentException(paramName: "Carteira", message: "A carteira precisa ser do mesmo mês e ano da data de reativação");

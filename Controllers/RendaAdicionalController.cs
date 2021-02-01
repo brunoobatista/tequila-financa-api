@@ -47,7 +47,7 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpGet("remover/{id}")]
+        [HttpPost("{id}/remover")]
         public ActionResult<RendaAdicional> remover(long id)
         {
             try

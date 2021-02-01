@@ -64,9 +64,10 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpPut("editar")]
-        public ActionResult<DespesaVariavel> editar([FromBody] DespesaVariavelDTO despesaVariavelDto)
+        [HttpPut("{id}/editar")]
+        public ActionResult<DespesaVariavel> editar([FromRoute] long id, [FromBody] DespesaVariavelDTO despesaVariavelDto)
         {
+            despesaVariavelDto.Id = id;
             try
             {
                 DespesaVariavel despesaVariavel = _despesaVariavelService.atualizar(despesaVariavelDto);
@@ -78,8 +79,8 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpGet("remover/{id}")]
-        public ActionResult<DespesaVariavel> remover(long id)
+        [HttpPut("{id}/remover")]
+        public ActionResult<DespesaVariavel> remover([FromRoute] long id)
         {
             try
             {
