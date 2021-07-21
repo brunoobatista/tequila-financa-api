@@ -25,7 +25,7 @@ namespace Tequila.Models
         public virtual Usuario Usuario { get; set; }
 
         [Column("renda")]
-        [Required(ErrorMessage = "Necessároo informar renda inicial")]
+        [Required(ErrorMessage = "Necessário informar renda inicial")]
         public decimal Renda { get; set; }
 
         [Column("renda_extra")]

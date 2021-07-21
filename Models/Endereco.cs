@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Tequila.Models.Interfaces;
 
 namespace Tequila.Models
 {
     [Table("endereco")]
-    public class Endereco
+    public class Endereco : IBase
     {
 
         [Column("id")]
