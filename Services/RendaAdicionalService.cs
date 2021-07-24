@@ -1,4 +1,5 @@
-﻿using System.Security;
+﻿using System;
+using System.Security;
 using AutoMapper;
 using Tequila.Models;
 using Tequila.Models.DTOs;
@@ -20,10 +21,12 @@ namespace Tequila.Services
             _carteiraRepository = carteiraRepository;
         }
 
-        public void remover(long id)
+        public void remover(long id, long userId)
         {
             // Carteira carteira = _carteiraRepository.Get(rendaAdicionalDto.CarteiraId);
             RendaAdicional rendaAdicional = _rendaAdicionalRepository.Get(id);
+            if (rendaAdicional.UsuarioId != userId)
+                throw new UnauthorizedAccessException("Renda adicionao não pertence ao usuário logado");
             if (/*carteira != null &&*/ rendaAdicional != null)
             {
                 // carteira.RendaExtra -= rendaAdicional.Valor;
@@ -35,7 +38,7 @@ namespace Tequila.Services
         }
 
         /*
-         * @TODO
+         * @TODO -- JÁ APLICADAS
          * Aplicar as regras
          * a. Ao salvar nova, desenvolver trigger que altera valor da rendaextra na carteira
          * b. Ao update, efetuar alteracao do valor na carteira tbm caso seja diferente

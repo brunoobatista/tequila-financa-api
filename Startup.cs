@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Tequila.Core;
 using Tequila.Repositories;
 using Tequila.Services;
 
@@ -65,7 +66,8 @@ namespace Tequila
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = false,
-                        ValidateAudience = false
+                        ValidateAudience = false, 
+                        ValidateLifetime = true
                     };
                 });
 
@@ -90,7 +92,7 @@ namespace Tequila
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            // app.UseOptions();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }

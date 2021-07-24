@@ -14,7 +14,7 @@ namespace Tequila.Controllers
     [Authorize]
     [ApiController]
     [Route("carteiras")]
-    public class CarteiraController : ControllerBase
+    public class CarteiraController : BaseController
     {
         private readonly CarteiraService _carteiraService;
 
@@ -23,11 +23,11 @@ namespace Tequila.Controllers
             _carteiraService = carteiraService;
         }
 
-        [HttpPost("usuario/{usuarioId}/nova")]
-        public ActionResult<Carteira> nova([FromRoute] long usuarioId)
+        [HttpPost("usuario/nova")]
+        public ActionResult<Carteira> nova()
         {
             CarteiraDTO carteiraDto = new CarteiraDTO();
-            carteiraDto.usuarioId = usuarioId;
+            carteiraDto.usuarioId = this.GetUserId();
             try 
             {
                 Carteira carteiraSalva = _carteiraService.Salvar(carteiraDto);
@@ -39,11 +39,11 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpGet("usuario/{usuarioId}/aberta")]
-        public ActionResult<CarteiraDTO> GetCarteira([FromRoute] long usuarioId)
+        [HttpGet("usuario/aberta")]
+        public ActionResult<CarteiraDTO> GetCarteira()
         {
             CarteiraDTO carteiraDto = new CarteiraDTO();
-            carteiraDto.usuarioId = usuarioId;
+            carteiraDto.usuarioId = this.GetUserId();
             try
             {
                 CarteiraDTO carteira = _carteiraService.GetCarteiraAtivaByUsuario(carteiraDto.usuarioId);
@@ -116,11 +116,11 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpGet("usuario/{usuarioId}")]
-        public ActionResult<IEnumerable<Carteira>> GetCarteiraDoUsuarioById([FromRoute] long usuarioId)
+        [HttpGet("usuario")]
+        public ActionResult<IEnumerable<Carteira>> GetCarteiraDoUsuarioById()
         {
             CarteiraDTO carteiraDto = new CarteiraDTO();
-            carteiraDto.usuarioId = usuarioId;
+            carteiraDto.usuarioId = this.GetUserId();
             try
             {
                 ICollection<Carteira> carteiras = _carteiraService.getCarteirasByUsuario(carteiraDto.usuarioId);

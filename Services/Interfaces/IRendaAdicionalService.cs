@@ -5,7 +5,7 @@ namespace Tequila.Services.Interfaces
 {
     public interface IRendaAdicionalService
     {
-        void remover(long id);
+        void remover(long id, long userId);
         RendaAdicional nova(RendaAdicionalDTO rendaAdicionalDto);
         RendaAdicional editar(RendaAdicionalDTO rendaAdicionalDto);
     }

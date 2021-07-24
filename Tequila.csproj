@@ -19,5 +19,9 @@
     <Compile Remove="Repositories\Interfaces\IDespesaFixaRepository.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared" />
+  </ItemGroup>
+
 
 </Project>
