@@ -33,9 +33,7 @@ begin
 end;
 $$;
 
-alter function atualizar_valor_despesa_update_despesafixa() owner to postgres;
-
-drop trigger atualizar_renda_extra on rendaadicional;
+--drop trigger atualizar_renda_extra on rendaadicional;
 create trigger atualizar_renda_extra
     after INSERT OR UPDATE on rendaadicional
     for each row execute function atualizar_renda_extra()

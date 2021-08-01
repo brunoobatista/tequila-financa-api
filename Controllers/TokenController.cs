@@ -7,10 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tequila.Models;
 using Tequila.Repositories;
-using Tequila.Repositories.Interfaces;
 using Tequila.Services;
-using Tequila.Services.Interfaces;
-
 namespace Tequila.Controllers
 {
 

@@ -19,6 +19,17 @@ CREATE TABLE IF NOT EXISTS public.Status (
 ;
 
 -- -----------------------------------------------------
+-- Table public.SitDespesa
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS public.SitDespesa CASCADE;
+
+CREATE TABLE IF NOT EXISTS public.SitDespesa (
+  id INT NOT NULL,
+  nome VARCHAR(45) NOT NULL,
+  PRIMARY KEY (id))
+;
+
+-- -----------------------------------------------------
 -- Table public.Tipo
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS public.Tipo CASCADE;
@@ -187,19 +198,19 @@ CREATE TABLE IF NOT EXISTS public.DespesasFixas (
 CREATE INDEX IF NOT EXISTS fk_usuario_despesasfxs_idx ON public.DespesasFixas (usuario_id ASC);
 
 -- -----------------------------------------------------
--- Table public.DespesaFixa
+-- Table public.Despesa
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS public.DespesaFixa CASCADE;
+DROP TABLE IF EXISTS public.Despesa CASCADE;
 
-CREATE SEQUENCE IF NOT EXISTS public.DespesaFixa_seq;
+CREATE SEQUENCE IF NOT EXISTS public.Despesa_seq;
 
-CREATE TABLE IF NOT EXISTS public.DespesaFixa (
-  id BIGINT NOT NULL DEFAULT NEXTVAL ('public.DespesaFixa_seq'),
+CREATE TABLE IF NOT EXISTS public.Despesa (
+  id BIGINT NOT NULL DEFAULT NEXTVAL ('public.Despesa_seq'),
   carteira_id BIGINT NOT NULL,
-  despesasfixas_id BIGINT NOT NULL,
+  despesasfixas_id BIGINT,
   descricao VARCHAR(255) NOT NULL,
-  valor_previsto NUMERIC(15,2) NULL,
   valor NUMERIC(15,2) NULL,
+  valor_previsto NUMERIC(15,2) NULL,
   total_parcelas INT NULL,
   parcela_atual INT NULL,
   data_vencimento timestamp(0) NULL,
@@ -209,12 +220,12 @@ CREATE TABLE IF NOT EXISTS public.DespesaFixa (
   tipo_id INT NOT NULL,
   status_id INT NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
-  CONSTRAINT fk_carteira_despesafx_id
+  CONSTRAINT fk_carteira_despesa_id
     FOREIGN KEY (carteira_id)
     REFERENCES public.Carteira (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT fk_despesasfixas_id_despesafx_id
+  CONSTRAINT fk_despesasfixas_id_despesa_id
     FOREIGN KEY (despesasfixas_id)
     REFERENCES public.DespesasFixas (id)
     ON DELETE NO ACTION
@@ -224,7 +235,7 @@ CREATE TABLE IF NOT EXISTS public.DespesaFixa (
     REFERENCES public.Tipo (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT fk_status_despesafixa_id
+  CONSTRAINT fk_status_despesa_id
     FOREIGN KEY (status_id)
     REFERENCES public.Status (id)
     ON DELETE NO ACTION
@@ -232,41 +243,41 @@ CREATE TABLE IF NOT EXISTS public.DespesaFixa (
   UNIQUE(carteira_id,despesasfixas_id)
 );
 
-CREATE INDEX IF NOT EXISTS fk_carteira_despesafx_idx ON public.DespesaFixa (carteira_id ASC);
+CREATE INDEX IF NOT EXISTS fk_carteira_despesa_idx ON public.Despesa (carteira_id ASC);
 
-CREATE INDEX IF NOT EXISTS fk_listafixadespesa_despesafx_idx ON public.DespesaFixa (despesasfixas_id ASC);
+CREATE INDEX IF NOT EXISTS fk_listafixadespesa_despesa_idx ON public.Despesa (despesasfixas_id ASC);
 
--- -----------------------------------------------------
--- Table public.DespesaVariavel
--- -----------------------------------------------------
-DROP TABLE IF EXISTS public.DespesaVariavel CASCADE;
-
-CREATE SEQUENCE IF NOT EXISTS public.DespesaVariavel_seq;
-
-CREATE TABLE IF NOT EXISTS public.DespesaVariavel (
-  id BIGINT NOT NULL DEFAULT NEXTVAL ('public.DespesaVariavel_seq'),
-  carteira_id BIGINT NOT NULL,
-  valor NUMERIC(15,2) NOT NULL,
-  descricao VARCHAR(255) NOT NULL,
-  criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
-  alterado_em TIMESTAMP(0) NULL,
-  ativo INTEGER NOT NULL DEFAULT 1,
-  status_id INT NOT NULL DEFAULT 1,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_carteira_despesavrl_id
-    FOREIGN KEY (carteira_id)
-    REFERENCES public.Carteira (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_status_despesavariavel_id
-    FOREIGN KEY (status_id)
-    REFERENCES public.Status (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    )
-;
-
-CREATE INDEX IF NOT EXISTS fk_carteira_despesavrl_idx ON public.DespesaVariavel (carteira_id ASC);
+---- -----------------------------------------------------
+---- Table public.DespesaVariavel
+---- -----------------------------------------------------
+--DROP TABLE IF EXISTS public.DespesaVariavel CASCADE;
+--
+--CREATE SEQUENCE IF NOT EXISTS public.DespesaVariavel_seq;
+--
+--CREATE TABLE IF NOT EXISTS public.DespesaVariavel (
+--  id BIGINT NOT NULL DEFAULT NEXTVAL ('public.DespesaVariavel_seq'),
+--  carteira_id BIGINT NOT NULL,
+--  valor NUMERIC(15,2) NOT NULL,
+--  descricao VARCHAR(255) NOT NULL,
+--  criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
+--  alterado_em TIMESTAMP(0) NULL,
+--  ativo INTEGER NOT NULL DEFAULT 1,
+--  status_id INT NOT NULL DEFAULT 1,
+--  PRIMARY KEY (id),
+--  CONSTRAINT fk_carteira_despesavrl_id
+--    FOREIGN KEY (carteira_id)
+--    REFERENCES public.Carteira (id)
+--    ON DELETE NO ACTION
+--    ON UPDATE NO ACTION,
+--  CONSTRAINT fk_status_despesavariavel_id
+--    FOREIGN KEY (status_id)
+--    REFERENCES public.Status (id)
+--    ON DELETE NO ACTION
+--    ON UPDATE NO ACTION
+--    )
+--;
+--
+--CREATE INDEX IF NOT EXISTS fk_carteira_despesavrl_idx ON public.DespesaVariavel (carteira_id ASC);
 
 
 -- ************************************** "EnderecoCompra"
@@ -304,12 +315,22 @@ INSERT INTO public.Usuario (id, email, senha, nome, avatar, cpf_cnpj, renda, tip
 -- -----------------------------------------------------
 -- Data for table public.Status
 -- -----------------------------------------------------
+INSERT INTO public.Status (id, nome) VALUES (0, 'CANCELADO');
 INSERT INTO public.Status (id, nome) VALUES (1, 'ABERTO');
 INSERT INTO public.Status (id, nome) VALUES (2, 'FINALIZADO');
-INSERT INTO public.Status (id, nome) VALUES (0, 'CANCELADO');
 
 -- -----------------------------------------------------
 -- Data for table public.Tipo
 -- -----------------------------------------------------
-INSERT INTO public.Tipo (id, nome) VALUES (1, 'CONTINUO');
-INSERT INTO public.Tipo (id, nome) VALUES (2, 'PARCELADO');
+INSERT INTO public.Tipo (id, nome) VALUES (0, 'VARIAVEL');
+INSERT INTO public.Tipo (id, nome) VALUES (1, 'CONTINUA');
+INSERT INTO public.Tipo (id, nome) VALUES (2, 'PARCELADA');
+
+
+-- -----------------------------------------------------
+-- Data for table public.SitDespesa
+-- -----------------------------------------------------
+INSERT INTO public.SitDespesa (id, nome) VALUES (0, 'CANCELADO');
+INSERT INTO public.SitDespesa (id, nome) VALUES (1, 'ABERTO');
+INSERT INTO public.SitDespesa (id, nome) VALUES (2, 'FINALIZADO');
+INSERT INTO public.SitDespesa (id, nome) VALUES (3, 'FIXADO');

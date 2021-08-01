@@ -15,20 +15,20 @@ begin
                 if reg.total_parcelas is not null then
                     if reg.parcela_atual < reg.total_parcelas then
                         v_parcela_atual = reg.parcela_atual + 1;
-                        insert into despesafixa(
+                        insert into despesa(
                             carteira_id, despesasfixas_id, descricao, valor, total_parcelas, parcela_atual, data_vencimento, tipo_id, status_id
                         ) values (
-                                     new.id, reg.id, reg.descricao, reg.valor_previsto, reg.total_parcelas, v_parcela_atual, reg.data_vencimento, reg.tipo_id, 2
+                                     new.id, reg.id, reg.descricao, reg.valor_previsto, reg.total_parcelas, v_parcela_atual, reg.data_vencimento, reg.tipo_id, 3
                                  );
                         update despesasfixas set parcela_atual = v_parcela_atual, alterado_em = now() where id = reg.id;
                     else
                         update despesasfixas set status_id = 2, alterado_em = now() where id = reg.id;
                     end if;
                 else
-                    insert into despesafixa(
-                        carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id
+                    insert into despesa(
+                        carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id, status_id
                     ) values (
-                                 new.id, reg.id, reg.descricao, reg.valor_previsto, reg.data_vencimento, reg.tipo_id
+                                 new.id, reg.id, reg.descricao, reg.valor_previsto, reg.data_vencimento, reg.tipo_id, 1
                              );
                 end if;
                 v_despesa = v_despesa + reg.valor_previsto;
@@ -51,7 +51,7 @@ create trigger inserir_despesa_fixa_pela_carteira
 
 
 
-create or replace function atualizar_valor_despesa_update_despesafixa()
+create or replace function atualizar_valor_despesa_update_despesa()
     returns trigger as $body$
 declare
     v_carteira_id bigint;
@@ -60,7 +60,7 @@ declare
     v_carteira carteira;
 begin
     if (tg_op = 'UPDATE') then
-        --tipo 2 = parcelado
+        --tipo 2 = parcelada
         if (new.tipo_id = 2) then
             if (new.valor <> old.valor) then
                 select * into v_carteira from carteira where id = new.carteira_id;
@@ -75,6 +75,6 @@ end;
 $body$
     language plpgsql;
 
-create trigger atualizar_valor_despesa_update_despesafixa
-    after UPDATE on despesafixa
-    for each row execute function atualizar_valor_despesa_update_despesafixa()
+create trigger atualizar_valor_despesa_update_despesa
+    after UPDATE on despesa
+    for each row execute function atualizar_valor_despesa_update_despesa()
