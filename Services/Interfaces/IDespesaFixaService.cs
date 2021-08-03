@@ -2,6 +2,6 @@
 {
     public interface IDespesaFixaService
     {
-        bool finalizarDespesa(long idDespesa, decimal valor);
+        bool finalizarDespesaFixa(long idDespesa, decimal valor);
     }
 }

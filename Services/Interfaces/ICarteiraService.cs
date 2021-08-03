@@ -11,7 +11,7 @@ namespace Tequila.Services.Interfaces
         CarteiraDTO GetCarteiraAtivaByUsuario(long usuarioId);
         void finalizarCarteira(CarteiraDTO carteiraDto);
 
-        void cancelarCarteira(CarteiraDTO carteiraDto);
+        void cancelarCarteira(long userId,CarteiraDTO carteiraDto);
 
         Carteira reativarCarteira(CarteiraDTO carteiraDto);
     }

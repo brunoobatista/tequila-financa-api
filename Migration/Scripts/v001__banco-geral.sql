@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS public.Status (
 -- -----------------------------------------------------
 -- Table public.SitDespesa
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS public.SitDespesa CASCADE;
+DROP TABLE IF EXISTS public.StatusDespesa CASCADE;
 
-CREATE TABLE IF NOT EXISTS public.SitDespesa (
+CREATE TABLE IF NOT EXISTS public.StatusDespesa (
   id INT NOT NULL,
   nome VARCHAR(45) NOT NULL,
   PRIMARY KEY (id))
@@ -207,6 +207,7 @@ CREATE SEQUENCE IF NOT EXISTS public.Despesa_seq;
 CREATE TABLE IF NOT EXISTS public.Despesa (
   id BIGINT NOT NULL DEFAULT NEXTVAL ('public.Despesa_seq'),
   carteira_id BIGINT NOT NULL,
+  usuario_id BIGINT NOT NULL,
   despesasfixas_id BIGINT,
   descricao VARCHAR(255) NOT NULL,
   valor NUMERIC(15,2) NULL,
@@ -225,6 +226,11 @@ CREATE TABLE IF NOT EXISTS public.Despesa (
     REFERENCES public.Carteira (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
+  CONSTRAINT fk_usuario_despesa_id
+    FOREIGN KEY (usuario_id)
+    REFERENCES public.Usuario (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT fk_despesasfixas_id_despesa_id
     FOREIGN KEY (despesasfixas_id)
     REFERENCES public.DespesasFixas (id)
@@ -237,7 +243,7 @@ CREATE TABLE IF NOT EXISTS public.Despesa (
     ON UPDATE NO ACTION,
   CONSTRAINT fk_status_despesa_id
     FOREIGN KEY (status_id)
-    REFERENCES public.Status (id)
+    REFERENCES public.StatusDespesa (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   UNIQUE(carteira_id,despesasfixas_id)
@@ -330,7 +336,7 @@ INSERT INTO public.Tipo (id, nome) VALUES (2, 'PARCELADA');
 -- -----------------------------------------------------
 -- Data for table public.SitDespesa
 -- -----------------------------------------------------
-INSERT INTO public.SitDespesa (id, nome) VALUES (0, 'CANCELADO');
-INSERT INTO public.SitDespesa (id, nome) VALUES (1, 'ABERTO');
-INSERT INTO public.SitDespesa (id, nome) VALUES (2, 'FINALIZADO');
-INSERT INTO public.SitDespesa (id, nome) VALUES (3, 'FIXADO');
+INSERT INTO public.StatusDespesa (id, nome) VALUES (0, 'CANCELADO');
+INSERT INTO public.StatusDespesa (id, nome) VALUES (1, 'ABERTO');
+INSERT INTO public.StatusDespesa (id, nome) VALUES (2, 'FINALIZADO');
+INSERT INTO public.StatusDespesa (id, nome) VALUES (3, 'FIXADO');

@@ -15,9 +15,9 @@ namespace Tequila.Services
     {
         private readonly CarteiraRepository _carteiraRepository;
         private readonly UsuarioRepository _usuarioRepository;
-        private readonly DespesaFixaRepository _despesaFixaRepository;
+        private readonly DespesaRepository _despesaFixaRepository;
 
-        public CarteiraService(CarteiraRepository carteiraRepository, UsuarioRepository usuarioRepository, DespesaFixaRepository despesaFixaRepository)
+        public CarteiraService(CarteiraRepository carteiraRepository, UsuarioRepository usuarioRepository, DespesaRepository despesaFixaRepository)
         {
             _carteiraRepository = carteiraRepository;
             _usuarioRepository = usuarioRepository;
@@ -63,7 +63,7 @@ namespace Tequila.Services
             if (carteira.StatusId != (int) STATUS.ABERTO)
                 throw new VerificationException("Carteira não está aberta");
 
-            List<DespesaFixa> despesas = _despesaFixaRepository.getDespesaFixaContinuaPorCarteira(carteira.Id);
+            List<Despesa> despesas = _despesaFixaRepository.getDespesaContinuaPorCarteira(carteira.Id);
 
             foreach (var despesa in despesas)
                 if (despesa.StatusId == (int)STATUS.ABERTO)
@@ -77,10 +77,10 @@ namespace Tequila.Services
          * @TODO
          * Aplicar regras de negócio para o cancelamento
          */
-        public void cancelarCarteira(CarteiraDTO carteiraDto)
+        public void cancelarCarteira(long userId, CarteiraDTO carteiraDto)
         {
             Carteira carteira = _carteiraRepository.GetCarteira(carteiraDto.Id);
-            List<DespesaFixa> despesas = _despesaFixaRepository.getListaCarteiraAtiva(carteira.Id);
+            List<Despesa> despesas = _despesaFixaRepository.getListaCarteiraAtiva(userId, carteira.Id, (int)TIPO.TODOS);
             if ((carteira.StatusId == (int)STATUS.FINALIZADO || carteira.StatusId == (int)STATUS.ABERTO) && despesas.Count > 0)
                 throw new VerificationException("Carteira já possui despesas vinculadas");
             carteira.StatusId = (int) STATUS.CANCELADO;

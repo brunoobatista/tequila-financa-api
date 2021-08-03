@@ -11,27 +11,57 @@ using Tequila.Models.Enum;
 
 namespace Tequila.Repositories
 {
-    public class DespesaFixaRepository : EFCoreRepository<DespesaFixa, ApplicationContext>
+    public class DespesaRepository : EFCoreRepository<Despesa, ApplicationContext>
     {
         private readonly ApplicationContext _context;
         
-        public DespesaFixaRepository(ApplicationContext context) : base(context)
+        public DespesaRepository(ApplicationContext context) : base(context)
         {
             _context = context;
         }
 
-        public List<DespesaFixa> getListaCarteiraAtiva(long carteiraId)
+        public List<Despesa> getListaCarteiraAtiva(long userId, long carteiraId, int? tipo)
         {
-            return _context.DespesaFixa
-                .AsNoTracking()
-                .Where(d => d.CarteiraId == carteiraId)
-                .ToList();
+            List<Despesa> despesas;
+            if (tipo == null || tipo == (int)TIPO.TODOS)
+            {
+                despesas = _context.Despesa
+                    .AsNoTracking()
+                    .Where(d => d.UsuarioId == userId && d.CarteiraId == carteiraId && d.Ativo == 1)
+                    .ToList();
+            }
+            else
+            {
+                despesas = _context.Despesa
+                    .AsNoTracking()
+                    .Where(
+                        d => d.UsuarioId == userId && 
+                             d.CarteiraId == carteiraId && 
+                             d.Ativo == 1 && 
+                             d.TipoId == tipo
+                             )
+                    .ToList();
+            }
+            
+            return despesas;
         }
 
-        public List<DespesaFixa> getDespesaFixaContinuaPorCarteira(long idCarteira)
+        public Despesa getDespesaVariavelByUsuario(long userId, long despesaId)
         {
-            return _context.DespesaFixa.AsNoTracking()
-                .Where(e => e.CarteiraId == idCarteira && e.TipoId == (int)TIPO.CONTINUO)
+            return _context.Despesa
+                .AsNoTracking()
+                .SingleOrDefault(
+                    d => d.UsuarioId == userId && 
+                         d.Id == despesaId && 
+                         d.TipoId == (int)TIPO.VARIAVEL && 
+                         d.Ativo == 1
+                    );
+        }
+
+        public List<Despesa> getDespesaContinuaPorCarteira(long carteiraId)
+        {
+            return _context.Despesa.AsNoTracking()
+                .Where(e => e.CarteiraId == carteiraId && e.TipoId == (int)TIPO.CONTINUO)
                 .ToList();
         }
         

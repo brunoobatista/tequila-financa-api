@@ -42,16 +42,17 @@ namespace Tequila
             builder.Entity<RendaAdicional>()
                 .HasOne(ra => ra.Usuario)
                 .WithMany();
+
             
-            builder.Entity<DespesaVariavel>()
-                .HasOne(dv => dv.Carteira)
-                .WithMany();
-            
-            builder.Entity<DespesaFixa>()
+            builder.Entity<Despesa>()
                 .HasOne(df => df.Carteira)
                 .WithMany();
             
-            builder.Entity<DespesaFixa>()
+            builder.Entity<Despesa>()
+                .HasOne(df => df.Usuario)
+                .WithMany();
+            
+            builder.Entity<Despesa>()
                 .HasOne(df => df.DespesasFixas)
                 .WithMany();
             
@@ -61,9 +62,8 @@ namespace Tequila
         }
         
         public DbSet<RendaAdicional> RendaAdicional { get; set; }
-        public DbSet<DespesaVariavel> DespesaVariavel { get; set; }
         public DbSet<DespesasFixas> DespesasFixas { get; set; }
-        public DbSet<DespesaFixa> DespesaFixa { get; set; }
+        public DbSet<Despesa> Despesa { get; set; }
         public DbSet<Endereco> Endereco { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
         public DbSet<Carteira> Carteira { get; set; }

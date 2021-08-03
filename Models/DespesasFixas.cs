@@ -26,7 +26,7 @@ namespace Tequila.Models
         [Required, Column("tipo_id")]
         public int TipoId { get; set; }
         
-        public ICollection<DespesaFixa> ListaDespesasFixas { get; set; }
+        public ICollection<Despesa> ListaDespesasFixas { get; set; }
 
         [Required, Column("descricao")]
         public string Descricao { get; set; }

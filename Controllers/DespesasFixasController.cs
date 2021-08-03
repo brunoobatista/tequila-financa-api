@@ -13,7 +13,7 @@ namespace Tequila.Controllers
     [Authorize]
     [ApiController]
     [Route("despesas-fixas")]
-    public class DespesasFixasController : ControllerBase
+    public class DespesasFixasController : BaseController
     {
         private readonly DespesasFixasService _despesasFixasService;
         private readonly DespesasFixasRepository _despesasFixasRepository;
@@ -63,6 +63,7 @@ namespace Tequila.Controllers
         {
             try
             {
+                despesasFixasDto.UsuarioId = this.GetUserId();
                 DespesasFixas despesasFixas = _despesasFixasService.salvar(despesasFixasDto);
                 return Ok(despesasFixas);
             }
