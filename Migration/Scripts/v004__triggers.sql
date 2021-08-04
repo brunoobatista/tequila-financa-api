@@ -16,9 +16,9 @@ begin
                     if reg.parcela_atual < reg.total_parcelas then
                         v_parcela_atual = reg.parcela_atual + 1;
                         insert into despesa(
-                            carteira_id, despesasfixas_id, descricao, valor, total_parcelas, parcela_atual, data_vencimento, tipo_id, status_id
+                            usuario_id, carteira_id, despesasfixas_id, descricao, valor, total_parcelas, parcela_atual, data_vencimento, tipo_id, status_id
                         ) values (
-                                     new.id, reg.id, reg.descricao, reg.valor_previsto, reg.total_parcelas, v_parcela_atual, reg.data_vencimento, reg.tipo_id, 3
+                                     new.usuario_id, new.id, reg.id, reg.descricao, reg.valor_previsto, reg.total_parcelas, v_parcela_atual, reg.data_vencimento, reg.tipo_id, 3
                                  );
                         update despesasfixas set parcela_atual = v_parcela_atual, alterado_em = now() where id = reg.id;
                     else
@@ -26,9 +26,9 @@ begin
                     end if;
                 else
                     insert into despesa(
-                        carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id, status_id
+                        usuario_id, carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id, status_id
                     ) values (
-                                 new.id, reg.id, reg.descricao, reg.valor_previsto, reg.data_vencimento, reg.tipo_id, 1
+                                 new.usuario_id, new.id, reg.id, reg.descricao, reg.valor_previsto, reg.data_vencimento, reg.tipo_id, 1
                              );
                 end if;
                 v_despesa = v_despesa + reg.valor_previsto;
