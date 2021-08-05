@@ -24,12 +24,12 @@ namespace Tequila.Controllers
             _despesasFixasRepository = despesasFixasRepository;
         }
     
-        [HttpGet("usuario/{idUsuario}")]
-        public ActionResult<IEnumerable<DespesasFixas>> getDespesasFixasByUsuario(long idUsuario)
+        [HttpGet("usuario")]
+        public ActionResult<IEnumerable<DespesasFixas>> getDespesasFixasByUsuario()
         {
             try
             {
-                List<DespesasFixas> despesasFixas = _despesasFixasRepository.getDespesasFixasByUsuario(idUsuario);
+                List<DespesasFixas> despesasFixas = _despesasFixasRepository.getDespesasFixasByUsuario(this.GetUserId());
                 if (despesasFixas.Count == 0)
                     return NotFound();
 
@@ -73,11 +73,13 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpPut("editar")]
-        public ActionResult<DespesasFixas> atualizar(DespesasFixasDTO despesasFixasDto)
+        [HttpPut("{id}/editar")]
+        public ActionResult<DespesasFixas> atualizar([FromQuery] long id, DespesasFixasDTO despesasFixasDto)
         {
             try
             {
+                despesasFixasDto.Id = id;
+                despesasFixasDto.UsuarioId = this.GetUserId();
                 DespesasFixas despesasFixas = _despesasFixasService.atualizar(despesasFixasDto);
                 return Ok(despesasFixas);
             }
