@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
+using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 
@@ -20,12 +21,12 @@ namespace Tequila.Repositories
             _carteiraRepository = carteiraRepository;
         }
 
-        public List<DespesasFixas> getDespesasFixasByUsuario(long idUsuario)
+        public PagedResult<DespesasFixas> getDespesasFixasByUsuario(long idUsuario, int page, int pageSize)
         {
             return _context.DespesasFixas
                 .Where(d => d.UsuarioId == idUsuario && d.Ativo == 1)
                 .AsNoTracking()
-                .ToList();
+                .GetPaged<DespesasFixas>(page, pageSize);
         }
 
         public DespesasFixas criarDespesasFixas(DespesasFixasDTO despesasFixasDto)

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using Tequila.Core;
 using Tequila.Models.Interfaces;
 using Tequila.Repositories.Interfaces;
 
@@ -21,11 +22,11 @@ namespace Tequila.Repositories
             _context = context;
         }
 
-        public List<TEntity> GetAll()
+        public List<TEntity> GetAll(int pageNumber, int pageSize)
         {
             var query = _context.Set<TEntity>().AsQueryable();
 
-            return query.Where(e => e.Ativo == 1).AsNoTracking().ToList();
+            return query.Where(e => e.Ativo == 1).AsNoTracking().ToList().GetRange(pageNumber, pageSize);
         }
         
         public TEntity Get(long id)

@@ -21,9 +21,9 @@ namespace Tequila.Controllers
         
         // GET: api/[controller]
         [HttpGet]
-        public ActionResult<List<TEntity>> Get()
+        public ActionResult<List<TEntity>> Get(int pageNumber, int pageSize)
         {
-            return _repository.GetAll();
+            return _repository.GetAll(pageNumber, pageSize);
         }
 
         // GET: api/[controller]/5

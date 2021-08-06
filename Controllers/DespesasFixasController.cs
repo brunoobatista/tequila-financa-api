@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Repositories;
@@ -25,12 +26,12 @@ namespace Tequila.Controllers
         }
     
         [HttpGet("usuario")]
-        public ActionResult<IEnumerable<DespesasFixas>> getDespesasFixasByUsuario()
+        public ActionResult<PagedResult<DespesasFixas>> getDespesasFixasByUsuario([FromQuery] int page, int pageSize)
         {
             try
             {
-                List<DespesasFixas> despesasFixas = _despesasFixasRepository.getDespesasFixasByUsuario(this.GetUserId());
-                if (despesasFixas.Count == 0)
+                PagedResult<DespesasFixas> despesasFixas = _despesasFixasRepository.getDespesasFixasByUsuario(this.GetUserId(), page, pageSize);
+                if (despesasFixas.Results.Count == 0)
                     return NotFound();
 
                 return despesasFixas;
