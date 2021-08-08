@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Models.Enum;
@@ -62,12 +64,12 @@ namespace Tequila.Controllers
          * Despesas
          */
         [HttpGet("ativas")]
-        public ActionResult<IEnumerable<Despesa>> getDespesas(
-            [FromQuery] long? carteiraId)
+        public ActionResult<PagedResult<Despesa>> getDespesas(
+            [FromQuery] QueryParams parameters)
         {
             try
             {
-                List<Despesa> despesaFixas = _despesaService.getDespesas(this.GetUserId(), carteiraId, (int)STATUSDESPESA.TODOS);
+                PagedResult<Despesa> despesaFixas = _despesaService.getDespesas(parameters, this.GetUserId(), null, (int)STATUSDESPESA.TODOS);
                 return Ok(despesaFixas);
             }
             catch (Exception e)
@@ -133,11 +135,11 @@ namespace Tequila.Controllers
          * Despesas Variável
          */
         [HttpGet("variavel/ativas")]
-        public ActionResult<IEnumerable<Despesa>> getDespesasVariaveis([FromQuery] long? carteiraId)
+        public ActionResult<PagedResult<Despesa>> getDespesasVariaveis([FromQuery] QueryParams parameters, long? carteiraId)
         {
             try
             {
-                List<Despesa> despesaVariaveis = _despesaService.getDespesas(this.GetUserId(), carteiraId, (int)TIPO.VARIAVEL);
+                PagedResult<Despesa> despesaVariaveis = _despesaService.getDespesas(parameters, this.GetUserId(), carteiraId, (int)TIPO.VARIAVEL);
                 return Ok(despesaVariaveis);
             }
             catch (Exception e)

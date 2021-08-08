@@ -26,11 +26,11 @@ namespace Tequila.Controllers
         }
     
         [HttpGet("usuario")]
-        public ActionResult<PagedResult<DespesasFixas>> getDespesasFixasByUsuario([FromQuery] int page, int pageSize)
+        public ActionResult<PagedResult<DespesasFixas>> getDespesasFixasByUsuario([FromQuery] QueryParams parameters)
         {
             try
             {
-                PagedResult<DespesasFixas> despesasFixas = _despesasFixasRepository.getDespesasFixasByUsuario(this.GetUserId(), page, pageSize);
+                PagedResult<DespesasFixas> despesasFixas = _despesasFixasRepository.getDespesasFixasByUsuario(this.GetUserId(),parameters);
                 if (despesasFixas.Results.Count == 0)
                     return NotFound();
 

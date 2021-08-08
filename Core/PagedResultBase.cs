@@ -7,7 +7,7 @@ namespace Tequila.Core
         public int CurrentPage { get; set; }
         public int PageCount { get; set; }
         public int PageSize { get; set; }
-        public int RowCount { get; set; }
+        public int Total { get; set; }
 
         public int FirstRowOnPage
         {
@@ -16,7 +16,7 @@ namespace Tequila.Core
 
         public int LastRowOnPage
         {
-            get { return Math.Min(CurrentPage * PageSize, RowCount); }
+            get { return Math.Min(CurrentPage * PageSize, Total); }
         }
     }
  

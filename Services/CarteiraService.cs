@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security;
 using AutoMapper;
+using Microsoft.AspNetCore.Diagnostics;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Models.Enum;
@@ -79,9 +80,10 @@ namespace Tequila.Services
          */
         public void cancelarCarteira(long userId, CarteiraDTO carteiraDto)
         {
+            // throw new NotImplementedException("Feature não implementada");
             Carteira carteira = _carteiraRepository.GetCarteira(carteiraDto.Id);
-            List<Despesa> despesas = _despesaFixaRepository.getListaCarteiraAtiva(userId, carteira.Id, (int)TIPO.TODOS);
-            if ((carteira.StatusId == (int)STATUS.FINALIZADO || carteira.StatusId == (int)STATUS.ABERTO) && despesas.Count > 0)
+            int totalDespesas = _despesaFixaRepository.hasDespesasOnCarteira(userId, carteira.Id);
+            if ((carteira.StatusId == (int)STATUS.FINALIZADO || carteira.StatusId == (int)STATUS.ABERTO) && totalDespesas > 0)
                 throw new VerificationException("Carteira já possui despesas vinculadas");
             carteira.StatusId = (int) STATUS.CANCELADO;
             _carteiraRepository.Update(carteira);

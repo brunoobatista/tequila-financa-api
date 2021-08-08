@@ -21,12 +21,12 @@ namespace Tequila.Repositories
             _carteiraRepository = carteiraRepository;
         }
 
-        public PagedResult<DespesasFixas> getDespesasFixasByUsuario(long idUsuario, int page, int pageSize)
+        public PagedResult<DespesasFixas> getDespesasFixasByUsuario(long idUsuario, QueryParams parameters)
         {
             return _context.DespesasFixas
                 .Where(d => d.UsuarioId == idUsuario && d.Ativo == 1)
                 .AsNoTracking()
-                .GetPaged<DespesasFixas>(page, pageSize);
+                .GetPaged(parameters);
         }
 
         public DespesasFixas criarDespesasFixas(DespesasFixasDTO despesasFixasDto)

@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security;
 using AutoMapper;
+using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Models.Enum;
@@ -62,7 +63,7 @@ namespace Tequila.Services
             return _despesaFixaRepository.Update(despesaFixa);
         }
 
-        public List<Despesa> getDespesas(long usuarioId, long? carteiraId, int tipo)
+        public PagedResult<Despesa> getDespesas(QueryParams parameters, long usuarioId, long? carteiraId, int tipo)
         {
             long cartId = 0;
             if (carteiraId == null)
@@ -82,10 +83,10 @@ namespace Tequila.Services
             Carteira carteira = _carteiraRepository.Get(cartId);
             if (carteira.UsuarioId == usuarioId)
             {
-                return _despesaFixaRepository.getListaCarteiraAtiva(usuarioId, carteira.Id, tipo);
+                return _despesaFixaRepository.getListaCarteiraAtiva(parameters,usuarioId, carteira.Id, tipo);
             }
 
-            return new List<Despesa>();
+            return new PagedResult<Despesa>();
         }
 
         public bool finalizarDespesaFixa(long idDespesa, decimal valor)

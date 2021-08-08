@@ -5,18 +5,19 @@ namespace Tequila.Core
 {
     public static class MissingExtensions
     {
-        public static PagedResult<T> GetPaged<T>(this IQueryable<T> query, int page, int pageSize) where T : class
+        public static PagedResult<T> GetPaged<T>(this IQueryable<T> query, QueryParams parameters) where T : class
         {
-            if (pageSize > 100) pageSize = 100;
+            if (parameters.pageSize > 100) parameters.pageSize = 100;
             var result = new PagedResult<T>();
-            result.PageSize = pageSize;
-            result.RowCount = query.Count();
+            result.CurrentPage = parameters.page;
+            result.PageSize = parameters.pageSize;
+            result.Total = query.Count();
 
-            var pageCount = (double) result.RowCount / pageSize;
+            var pageCount = (double) result.Total / parameters.pageSize;
             result.PageCount = (int) Math.Ceiling(pageCount);
 
-            var skip = (page - 1) * pageSize;
-            result.Results = query.Skip(skip).Take(pageSize).ToList();
+            var skip = (parameters.page - 1) * parameters.pageSize;
+            result.Results = query.Skip(skip).Take(parameters.pageSize).ToList();
             return result;
         }
     }

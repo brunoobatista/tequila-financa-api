@@ -2,9 +2,11 @@
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
+using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Models.Enum;
@@ -20,15 +22,22 @@ namespace Tequila.Repositories
             _context = context;
         }
 
-        public List<Despesa> getListaCarteiraAtiva(long userId, long carteiraId, int? tipo)
+        public int hasDespesasOnCarteira(long userId, long carteiraId)
         {
-            List<Despesa> despesas;
+            return _context.Despesa
+                .AsNoTracking()
+                .Count(d => d.UsuarioId == userId && d.CarteiraId == carteiraId && d.Ativo == 1);
+        }
+
+        public PagedResult<Despesa> getListaCarteiraAtiva([FromQuery] QueryParams parameters, long userId, long carteiraId, int? tipo)
+        {
+            PagedResult<Despesa> despesas;
             if (tipo == null || tipo == (int)TIPO.TODOS)
             {
                 despesas = _context.Despesa
                     .AsNoTracking()
                     .Where(d => d.UsuarioId == userId && d.CarteiraId == carteiraId && d.Ativo == 1)
-                    .ToList();
+                    .GetPaged(parameters);
             }
             else
             {
@@ -40,7 +49,7 @@ namespace Tequila.Repositories
                              d.Ativo == 1 && 
                              d.TipoId == tipo
                              )
-                    .ToList();
+                    .GetPaged(parameters);
             }
             
             return despesas;
