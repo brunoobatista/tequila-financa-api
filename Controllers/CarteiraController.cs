@@ -5,6 +5,7 @@ using Tequila.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Tequila.Core;
 using Tequila.Models.DTOs;
 using Tequila.Repositories;
 using Tequila.Services;
@@ -117,13 +118,13 @@ namespace Tequila.Controllers
         }
         
         [HttpGet("usuario")]
-        public ActionResult<IEnumerable<Carteira>> GetCarteiraDoUsuarioById()
+        public ActionResult<PagedResult<Carteira>> GetCarteiraDoUsuarioById([FromQuery] QueryParams parameters)
         {
             CarteiraDTO carteiraDto = new CarteiraDTO();
             carteiraDto.usuarioId = this.GetUserId();
             try
             {
-                ICollection<Carteira> carteiras = _carteiraService.getCarteirasByUsuario(carteiraDto.usuarioId);
+                PagedResult<Carteira> carteiras = _carteiraService.getCarteirasByUsuario(parameters, carteiraDto.usuarioId);
                 return Ok(carteiras);
             }
             catch (Exception e)

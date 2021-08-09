@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Tequila.Core;
 using Tequila.Models;
 
 namespace Tequila.Controllers
 {
     [ApiController]
     [Route("enderecos")]
-    public class EnderecosController : ControllerBase
+    public class EnderecosController : BaseController
     {
         private readonly ApplicationContext _context;
         
@@ -17,9 +18,9 @@ namespace Tequila.Controllers
         }
         
         [HttpGet]
-        public virtual IEnumerable<Endereco> Get()
+        public virtual PagedResult<Endereco> Get(QueryParams parameters)
         {
-            var enderecos = _context.Endereco.ToList();
+            var enderecos = _context.Endereco.GetPaged(parameters);
             return enderecos;
         }
     }

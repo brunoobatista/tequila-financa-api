@@ -9,7 +9,7 @@ namespace Tequila.Repositories.Interfaces
 {
     public interface IRepository<T> where T : class, IEntity
     {
-        List<T> GetAll(int pageNumber, int pageSize);
+        PagedResult<T> GetAll(QueryParams queryParams);
         //T Get(Expression<Func<T, bool>> predicate, params string[] navigationProperties);
         T Get(long id);
         T Add(T entity);

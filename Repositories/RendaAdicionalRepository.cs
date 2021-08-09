@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Tequila.Core;
 using Tequila.Models;
 
 namespace Tequila.Repositories
@@ -13,11 +14,9 @@ namespace Tequila.Repositories
             _context = context;
         }
         
-        public List<RendaAdicional> GetAll(long usuarioId)
+        public PagedResult<RendaAdicional> GetAll(QueryParams parameters, long usuarioId)
         {
-            var query = _context.Set<RendaAdicional>().AsQueryable();
-
-            return query.Where(e => e.UsuarioId == usuarioId && e.Ativo == 1).AsNoTracking().ToList();
+           return _context.Set<RendaAdicional>().AsNoTracking().Where(e => e.UsuarioId == usuarioId && e.Ativo == 1).GetPaged(parameters);
         }
     }
 }

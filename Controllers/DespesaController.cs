@@ -82,7 +82,7 @@ namespace Tequila.Controllers
          * Despesas Fixas
          */
         [HttpPost("{despesaId}/finalizar")]
-        public IActionResult finalizar(long despesaId, [FromBody] ValorDTO valorDto)
+        public ActionResult finalizar(long despesaId, [FromBody] ValorDTO valorDto)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace Tequila.Controllers
          * Despesas Variável
          */
         [HttpPost("variavel/salvar")]
-        public IActionResult salvarDespesaVariavel([FromBody] DespesaVariavelDTO despesaVariavelDto)
+        public ActionResult salvarDespesaVariavel([FromBody] DespesaVariavelDTO despesaVariavelDto)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace Tequila.Controllers
          * Despesas Variável
          */
         [HttpGet("variavel/{id}")]
-        public IActionResult salvarDespesaVariavel([FromQuery] long id)
+        public ActionResult salvarDespesaVariavel([FromQuery] long id)
         {
             try
             {

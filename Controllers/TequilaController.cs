@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Tequila.Core;
 using Tequila.Models.Interfaces;
 using Tequila.Repositories.Interfaces;
 
@@ -21,9 +22,9 @@ namespace Tequila.Controllers
         
         // GET: api/[controller]
         [HttpGet]
-        public ActionResult<List<TEntity>> Get(int pageNumber, int pageSize)
+        public ActionResult<PagedResult<TEntity>> Get([FromQuery] QueryParams queryParams)
         {
-            return _repository.GetAll(pageNumber, pageSize);
+            return _repository.GetAll(queryParams);
         }
 
         // GET: api/[controller]/5

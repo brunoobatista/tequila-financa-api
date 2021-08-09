@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Repositories;
@@ -24,18 +25,17 @@ namespace Tequila.Controllers
         }
 
         [Route("")]
-        public ActionResult<ICollection<RendaAdicional>> getAllRendas()
+        public ActionResult<PagedResult<RendaAdicional>> getAllRendas([FromQuery] QueryParams parameters)
         {
             try
             {
-                ICollection<RendaAdicional> rendasAdicionals = _rendaAdicionalRepository.GetAll(this.GetUserId());
+                PagedResult<RendaAdicional> rendasAdicionals = _rendaAdicionalRepository.GetAll(parameters, this.GetUserId());
                 return Ok(rendasAdicionals);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-            return  _rendaAdicionalRepository.GetAll(this.GetUserId());
         }
 
         [Route("nova")]

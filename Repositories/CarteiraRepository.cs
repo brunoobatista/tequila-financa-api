@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.Enum;
 
@@ -47,13 +48,13 @@ namespace Tequila.Repositories
             return carteira;
         }
 
-        public ICollection<Carteira> getCarteirasByUsuario(long usuarioId)
+        public PagedResult<Carteira> getCarteirasByUsuario(QueryParams parameters, long usuarioId)
         {
-            ICollection<Carteira> carteiras = _context.Carteira
+            PagedResult<Carteira> carteiras = _context.Carteira
                 .AsNoTracking()
                 .Where(c => c.UsuarioId == usuarioId && c.Ativo == 1)
                 .OrderByDescending(c => c.CriadoEm)
-                .ToList();
+                .GetPaged(parameters);
             return carteiras;
         }
 

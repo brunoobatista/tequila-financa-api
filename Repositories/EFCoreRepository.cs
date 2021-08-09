@@ -22,11 +22,9 @@ namespace Tequila.Repositories
             _context = context;
         }
 
-        public List<TEntity> GetAll(int pageNumber, int pageSize)
+        public PagedResult<TEntity> GetAll(QueryParams queryParams)
         {
-            var query = _context.Set<TEntity>().AsQueryable();
-
-            return query.Where(e => e.Ativo == 1).AsNoTracking().ToList().GetRange(pageNumber, pageSize);
+            return _context.Set<TEntity>().AsNoTracking().Where(e => e.Ativo == 1).GetPaged(queryParams);
         }
         
         public TEntity Get(long id)

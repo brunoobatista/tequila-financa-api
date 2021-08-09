@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Security;
 using AutoMapper;
 using Microsoft.AspNetCore.Diagnostics;
+using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Models.Enum;
@@ -110,9 +111,9 @@ namespace Tequila.Services
             throw new ArgumentException(paramName: "Carteira", message: "A carteira enviada não foi a última criada ou não foi finalizada");
         }
 
-        public ICollection<Carteira> getCarteirasByUsuario(long usuarioId)
+        public PagedResult<Carteira> getCarteirasByUsuario(QueryParams parameters, long usuarioId)
         {
-            return _carteiraRepository.getCarteirasByUsuario(usuarioId);
+            return _carteiraRepository.getCarteirasByUsuario(parameters, usuarioId);
         }
     }
 }

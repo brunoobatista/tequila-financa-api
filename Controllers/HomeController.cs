@@ -7,10 +7,10 @@ namespace Tequila.Controllers
     [Authorize]
     [ApiController]
     [Route("home")]
-    public class HomeController : ControllerBase
+    public class HomeController : BaseController
     {
         [HttpGet()]
-        public ActionResult<string> GetCarteira([FromRoute] long usuarioId)
+        public ActionResult<string> GetCarteira()
         {
             try
             {

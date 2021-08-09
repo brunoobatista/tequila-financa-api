@@ -59,9 +59,19 @@ declare
     v_old numeric;
     v_carteira carteira;
 begin
+   if (tg_op = 'INSERT') then
+        --tipo 0 = VARIAVEL
+        if (new.tipo_id = 0) then
+            select * into v_carteira from carteira where id = new.carteira_id;
+            v_old = v_carteira.despesa - old.valor;
+            v_new = v_old + new.valor;
+            update carteira set despesa = v_new, alterado_em = now() where id = new.carteira_id;
+        end if;
+    end if;
     if (tg_op = 'UPDATE') then
         --tipo 2 = parcelada
-        if (new.tipo_id = 2) then
+        --tipo 0 = VARIAVEL
+        if (new.tipo_id = 2 OR new.tipo = 0) then
             if (new.valor <> old.valor) then
                 select * into v_carteira from carteira where id = new.carteira_id;
                 v_old = v_carteira.despesa - old.valor;
