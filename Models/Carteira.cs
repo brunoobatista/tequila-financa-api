@@ -45,5 +45,9 @@ namespace Tequila.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("ativo")]
         public int? Ativo { get; set; }
+        
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("can_reativar")]
+        public bool? CanReativar { get; set; }
     }
 }

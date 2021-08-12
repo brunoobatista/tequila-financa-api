@@ -93,7 +93,7 @@ namespace Tequila.Services
         public Carteira reativarCarteira(CarteiraDTO carteiraDto)
         {
             Carteira ultimaCarteira = _carteiraRepository.getUltimaCarteira();
-            if (carteiraDto.Id == ultimaCarteira.Id && 
+            if (carteiraDto.Id == ultimaCarteira.Id && ultimaCarteira.CanReativar == true &&
                 (ultimaCarteira.StatusId == (int)STATUS.CANCELADO ||
                  ultimaCarteira.StatusId == (int)STATUS.FINALIZADO))
             {

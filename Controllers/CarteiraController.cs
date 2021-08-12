@@ -24,7 +24,7 @@ namespace Tequila.Controllers
             _carteiraService = carteiraService;
         }
 
-        [HttpPost("usuario/nova")]
+        [HttpPost("nova")]
         public ActionResult<Carteira> nova()
         {
             CarteiraDTO carteiraDto = new CarteiraDTO();
@@ -40,7 +40,7 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpGet("usuario/aberta")]
+        [HttpGet("aberta")]
         public ActionResult<CarteiraDTO> GetCarteira()
         {
             CarteiraDTO carteiraDto = new CarteiraDTO();
@@ -117,7 +117,7 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpGet("usuario")]
+        [HttpGet]
         public ActionResult<PagedResult<Carteira>> GetCarteiraDoUsuarioById([FromQuery] QueryParams parameters)
         {
             CarteiraDTO carteiraDto = new CarteiraDTO();
