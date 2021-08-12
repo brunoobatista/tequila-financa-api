@@ -1,4 +1,6 @@
-﻿create or replace function inserir_despesa_fixa_pela_carteira() returns trigger
+﻿
+-- TRIGGER DE ATUALIZAR DESPESAS FIXAS QUANTO INSERE CARTEIRA
+create or replace function inserir_despesa_fixa_pela_carteira() returns trigger
     language plpgsql
 as
 $$
@@ -44,13 +46,13 @@ $$;
 alter function inserir_despesa_fixa_pela_carteira() owner to postgres;
 
 
-
 create trigger inserir_despesa_fixa_pela_carteira
     after INSERT on carteira
     for each row execute function inserir_despesa_fixa_pela_carteira()
+--------------------------------------------------------------------------------------
 
 
-
+--FUNCOES DE ATUALIZAR DESPESAS
 create or replace function atualizar_valor_despesa_update_despesa() returns trigger
     language plpgsql
 as
@@ -84,8 +86,31 @@ $$;
 
 alter function atualizar_valor_despesa_update_despesa() owner to postgres;
 
-
-
 create trigger atualizar_valor_despesa_update_despesa
     after INSERT OR UPDATE on despesa
     for each row execute function atualizar_valor_despesa_update_despesa()
+-------------------------------------------------------------------------------------------------
+
+-- FUNCAO REMOVER PERMISSAO DE REATIVAR
+create or replace function remover_permissao_reativar_carteira() returns trigger
+    language plpgsql
+as
+$$
+declare
+    reg record;
+begin
+    if (tg_op = 'INSERT') then
+        for reg in (select * from carteira c where c.usuario_id = new.usuario_id and c.ativo = 1 and c.can_reativar = true) loop
+            update carteira set can_reativar = false, alterado_em = now() where id = reg.id;
+        end loop;
+        return new;
+    end if;
+end;
+$$;
+
+alter function remover_permissao_reativar_carteira() owner to postgres;
+
+create trigger remover_permissao_reativar_carteira
+    before INSERT on carteira
+    for each row execute function remover_permissao_reativar_carteira()
+-------------------------------------------------------------------------------------------

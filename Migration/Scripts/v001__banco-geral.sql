@@ -107,6 +107,7 @@ CREATE TABLE IF NOT EXISTS public.Carteira (
   criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
   alterado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
+  can_reativar BOOLEAN NOT NULL DEFAULT true,
   PRIMARY KEY (id),
   CONSTRAINT fk_usuario_carteira_id
     FOREIGN KEY (usuario_id)
