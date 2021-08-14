@@ -33,7 +33,7 @@ namespace Tequila
                 );
 
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(
-                    Configuration.GetSection("ConnectionStrings")["TequilaFinanca"]
+                    Configuration.GetSection("ConnectionStrings")["TequildaDev"]
                 )
             );
 
