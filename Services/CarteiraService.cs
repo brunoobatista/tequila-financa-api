@@ -72,6 +72,7 @@ namespace Tequila.Services
                     throw new VerificationException("Carteira possui despesa(s) contínua(s) sem finalizar com valor final");
 
             carteira.StatusId = (int) STATUS.FINALIZADO;
+            carteira.FinalizadoEm = DateTime.Now;
             _carteiraRepository.Update(carteira);
         }
         

@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS public.Carteira (
   renda_extra NUMERIC(15,2) DEFAULT 0,
   criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
   alterado_em TIMESTAMP(0) NULL,
+  finalizado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
   can_reativar BOOLEAN NOT NULL DEFAULT true,
   PRIMARY KEY (id),
