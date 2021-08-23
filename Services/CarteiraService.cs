@@ -45,7 +45,7 @@ namespace Tequila.Services
         public Carteira Salvar(CarteiraDTO carteiraDTO)
         {
             if (_carteiraRepository.hasCarteiraAtiva(carteiraDTO.usuarioId))
-                throw new DuplicateWaitObjectException("Já existe uma carteira aberta");
+                throw new VerificationException("Já existe uma carteira aberta");
             
             var config = new MapperConfiguration(cfg => cfg.CreateMap<CarteiraDTO, Carteira>());
             var mapper = config.CreateMapper();
