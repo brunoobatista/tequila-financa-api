@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Tequila.Core;
 using Tequila.Models;
@@ -71,6 +72,21 @@ namespace Tequila.Controllers
             {
                 PagedResult<Despesa> despesaFixas = _despesaService.getDespesas(parameters, this.GetUserId(), null, (int)STATUSDESPESA.TODOS);
                 return Ok(despesaFixas);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpGet("carteira/{carteiraId}")]
+        public ActionResult<PagedResult<Despesa>> getDespesasByCarteira(
+            long carteiraId, [FromQuery] QueryParams parameters)
+        {
+            try
+            {
+                PagedResult<Despesa> despesa = _despesaService.getDespesas(parameters, this.GetUserId(), carteiraId, (int)STATUSDESPESA.TODOS);
+                return Ok(despesa);
             }
             catch (Exception e)
             {

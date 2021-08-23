@@ -10,5 +10,9 @@ namespace Tequila.Core
         
         [BindRequired]
         public int pageSize { get; set; }
+
+        public string orderBy { get; set; }
+        
+        public string orderCampo { get; set; }
     }
 }

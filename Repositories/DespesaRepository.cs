@@ -31,18 +31,19 @@ namespace Tequila.Repositories
 
         public PagedResult<Despesa> getListaCarteiraAtiva([FromQuery] QueryParams parameters, long userId, long carteiraId, int? tipo)
         {
+            IQueryable<Despesa> query = _context.Despesa.AsNoTracking();
+            
             PagedResult<Despesa> despesas;
             if (tipo == null || tipo == (int)TIPO.TODOS)
             {
-                despesas = _context.Despesa
-                    .AsNoTracking()
+                despesas = query
                     .Where(d => d.UsuarioId == userId && d.CarteiraId == carteiraId && d.Ativo == 1)
+                    .OrderBy(d => d.Id)
                     .GetPaged(parameters);
             }
             else
             {
-                despesas = _context.Despesa
-                    .AsNoTracking()
+                despesas = query
                     .Where(
                         d => d.UsuarioId == userId && 
                              d.CarteiraId == carteiraId && 
