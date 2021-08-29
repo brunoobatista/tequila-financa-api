@@ -38,9 +38,9 @@ namespace Tequila.Services
             return _despesasFixasRepository.Update(despesasFixas);
         }
         
-        public DespesasFixas finalizar(DespesasFixasDTO despesasFixasDto)
+        public DespesasFixas finalizar(long idDespesasFixas)
         {
-            DespesasFixas despesasFixas = _despesasFixasRepository.Get(despesasFixasDto.Id);
+            DespesasFixas despesasFixas = _despesasFixasRepository.Get(idDespesasFixas);
             if (despesasFixas.StatusId != (int) STATUS.ABERTO)
                 throw new VerificationException("Despesa Fixa não está aberta");
             despesasFixas.StatusId = (int) STATUS.FINALIZADO;

@@ -9,7 +9,7 @@ namespace Tequila.Services.Interfaces
         Carteira GetById(long Id);
 
         CarteiraDTO GetCarteiraAtivaByUsuario(long usuarioId);
-        void finalizarCarteira(CarteiraDTO carteiraDto);
+        Carteira finalizarCarteira(CarteiraDTO carteiraDto);
 
         void cancelarCarteira(long userId,CarteiraDTO carteiraDto);
 

@@ -25,7 +25,7 @@ namespace Tequila.Controllers
             _despesasFixasRepository = despesasFixasRepository;
         }
     
-        [HttpGet("usuario")]
+        [HttpGet]
         public ActionResult<PagedResult<DespesasFixas>> getDespesasFixasByUsuario([FromQuery] QueryParams parameters)
         {
             try
@@ -90,12 +90,12 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpPost("finalizar")]
-        public ActionResult<DespesasFixas> finalizar(DespesasFixasDTO despesasFixasDto)
+        [HttpPost("{id}/finalizar")]
+        public ActionResult<DespesasFixas> finalizar([FromRoute] long id)
         {
             try
             {
-                DespesasFixas despesasFixas = _despesasFixasService.finalizar(despesasFixasDto);
+                DespesasFixas despesasFixas = _despesasFixasService.finalizar(id);
                 return Ok(despesasFixas);
             }
             catch (Exception e)

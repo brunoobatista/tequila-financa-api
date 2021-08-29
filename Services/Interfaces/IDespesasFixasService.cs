@@ -8,7 +8,7 @@ namespace Tequila.Services.Interfaces
         DespesasFixas salvar(DespesasFixasDTO despesasFixasDto);
         DespesasFixas atualizar(DespesasFixasDTO despesasFixasDto);
         
-        DespesasFixas finalizar(DespesasFixasDTO despesasFixasDto);
+        DespesasFixas finalizar(long idDespesasFixas);
         
         void remover(long idDespesasFixas);
     }

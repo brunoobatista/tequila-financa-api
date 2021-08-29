@@ -59,7 +59,7 @@ namespace Tequila.Services
             return carteira;
         }
         
-        public void finalizarCarteira(CarteiraDTO carteiraDto)
+        public Carteira finalizarCarteira(CarteiraDTO carteiraDto)
         {
             Carteira carteira = _carteiraRepository.GetCarteira(carteiraDto.Id);
             if (carteira.StatusId != (int) STATUS.ABERTO)
@@ -73,7 +73,7 @@ namespace Tequila.Services
 
             carteira.StatusId = (int) STATUS.FINALIZADO;
             carteira.FinalizadoEm = DateTime.Now;
-            _carteiraRepository.Update(carteira);
+            return _carteiraRepository.Update(carteira);
         }
         
         /*
@@ -107,9 +107,9 @@ namespace Tequila.Services
                     _carteiraRepository.Update(ultimaCarteira);
                     return ultimaCarteira;
                 }
-                throw new ArgumentException(paramName: "Carteira", message: "A carteira precisa ser do mesmo mês e ano da data de reativação");
+                throw new ArgumentException(message: "A carteira precisa ser do mesmo mês e ano da data de reativação");
             }
-            throw new ArgumentException(paramName: "Carteira", message: "A carteira enviada não foi a última criada ou não foi finalizada");
+            throw new ArgumentException(message: "A carteira enviada não foi a última criada ou não foi finalizada");
         }
 
         public PagedResult<Carteira> getCarteirasByUsuario(QueryParams parameters, long usuarioId)

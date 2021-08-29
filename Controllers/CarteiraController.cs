@@ -63,8 +63,8 @@ namespace Tequila.Controllers
             carteiraDto.Id = id;
             try
             {
-                _carteiraService.finalizarCarteira(carteiraDto);
-                return NoContent();
+                Carteira carteira = _carteiraService.finalizarCarteira(carteiraDto);
+                return Ok(carteira);
             }
             catch (Exception e)
             {
