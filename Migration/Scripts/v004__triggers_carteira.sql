@@ -26,6 +26,7 @@ begin
                     update despesasfixas set parcela_atual = v_parcela_atual, alterado_em = now() where id = reg.id;
                 else
                     update despesasfixas set status_id = 2, alterado_em = now() where id = reg.id;
+                    continue;
                 end if;
             else
                 insert into despesa(
