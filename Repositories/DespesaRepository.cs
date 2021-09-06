@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
@@ -29,7 +30,30 @@ namespace Tequila.Repositories
                 .Count(d => d.UsuarioId == userId && d.CarteiraId == carteiraId && d.Ativo == 1);
         }
 
-        public PagedResult<Despesa> getListaCarteiraAtiva([FromQuery] QueryParams parameters, long userId, long carteiraId, int? tipo)
+        public PagedResult<Despesa> getDespesaAll(QueryParams parameters, long userId, string tipos, long? cartId)
+        {
+            IQueryable<Despesa> query = _context.Despesa.AsNoTracking().Where(d => d.UsuarioId == userId);
+
+            if (tipos != null)
+            {
+                Collection<int> tiposD = new Collection<int>();
+                foreach (var tipo in tipos.Split(','))
+                {
+                    tiposD.Add(Int16.Parse(tipo));
+                }
+
+                query = query.Where(d => tiposD.Contains(d.TipoId));
+            }
+
+            if (cartId != null)
+            {
+                query = query.Where(d => d.CarteiraId == cartId);
+            }
+
+            return query.GetPaged(parameters: parameters);
+        }
+
+        public PagedResult<Despesa> getListaCarteiraAtiva(QueryParams parameters, long userId, long carteiraId, int? tipo)
         {
             IQueryable<Despesa> query = _context.Despesa.AsNoTracking();
             

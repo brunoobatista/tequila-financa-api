@@ -19,7 +19,7 @@ namespace Tequila.Controllers
     
     [Authorize]
     [ApiController]
-    [Route("despesa")]
+    [Route("despesas")]
     public class DespesaFixaController : BaseController
     {
         private readonly DespesaService _despesaService;
@@ -54,6 +54,21 @@ namespace Tequila.Controllers
             {
                 Despesa despesaFixa = _despesaService.atualizar(despesaFixaDto);
                 return Ok(despesaFixa);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpGet]
+        public ActionResult<PagedResult<Despesa>> getDespesasAll(
+            [FromQuery] QueryParams parameters, string? tipos, bool? ativo)
+        {
+            try
+            {
+                PagedResult<Despesa> despesas = _despesaService.getDespesasAll(parameters, this.GetUserId(), tipos, ativo);
+                return Ok(despesas);
             }
             catch (Exception e)
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Security;
 using AutoMapper;
@@ -61,6 +62,22 @@ namespace Tequila.Services
             despesaFixa.CarteiraId = despesaOld.CarteiraId;
 
             return _despesaFixaRepository.Update(despesaFixa);
+        }
+        
+        public PagedResult<Despesa> getDespesasAll(QueryParams parameters, long usuarioId, string? tipos, bool? ativo = true)
+        {
+            long? cartId = null;
+            if (ativo.HasValue && ativo.Value)
+            {
+                Carteira aberta = _carteiraRepository.GetCarteiraAtivaByUsuario(usuarioId);
+                if (aberta == null)
+                {
+                    throw new ValidationException("Não há carteira aberta, crie ou informe uma carteira");
+                }
+
+                cartId = aberta.Id;
+            }
+            return _despesaFixaRepository.getDespesaAll(parameters, usuarioId, tipos, cartId);
         }
 
         public PagedResult<Despesa> getDespesas(QueryParams parameters, long usuarioId, long? carteiraId, int tipo)
