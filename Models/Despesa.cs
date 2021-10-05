@@ -66,15 +66,15 @@ namespace Tequila.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime? CriadoEm { get; set; }
 
-        public static Despesa mapperDespesaVariavel(long userId, long carteiraId, DespesaVariavelDTO despesaVariavelDto)
+        public static Despesa mapperDespesaAvulsa(long userId, long carteiraId, DespesaAvulsaDTO despesaAvulsaDto)
         {
             Despesa despesa = new Despesa();
-            despesa.Id = despesaVariavelDto.Id ?? default(long);
-            despesa.Descricao = despesaVariavelDto.Descricao;
-            despesa.Valor = despesaVariavelDto.Valor;
+            despesa.Id = despesaAvulsaDto.Id ?? default(long);
+            despesa.Descricao = despesaAvulsaDto.Descricao;
+            despesa.Valor = despesaAvulsaDto.Valor;
             despesa.CarteiraId = carteiraId;
             despesa.UsuarioId = userId;
-            despesa.TipoId = (int)TIPO.VARIAVEL;
+            despesa.TipoId = (int)TIPO.AVULSA;
             despesa.StatusId = (int)STATUSDESPESA.FIXADO;
 
             return despesa;

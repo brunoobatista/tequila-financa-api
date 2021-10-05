@@ -27,11 +27,11 @@ namespace Tequila.Services
             return _despesaFixaRepository.Get(id);
         }
 
-        public Despesa salvarDespesaVariavel(long userId, DespesaVariavelDTO despesaVariavelDto)
+        public Despesa salvarDespesaAvulsa(long userId, DespesaAvulsaDTO despesaAvulsaDto)
         {
             Carteira carteira = _carteiraRepository.GetCarteiraAtivaByUsuario(userId);
-            Despesa despesa = Despesa.mapperDespesaVariavel(userId, carteira.Id, despesaVariavelDto);
-            if (despesaVariavelDto.Id == null)
+            Despesa despesa = Despesa.mapperDespesaAvulsa(userId, carteira.Id, despesaAvulsaDto);
+            if (despesaAvulsaDto.Id == null)
             {
                 _despesaFixaRepository.Add(despesa);
             }
@@ -43,9 +43,9 @@ namespace Tequila.Services
             return despesa;
         }
 
-        public Despesa getDespesaVariavel(long userId, long despesaId)
+        public Despesa getDespesaAvulsa(long userId, long despesaId)
         {
-            Despesa despesa = _despesaFixaRepository.getDespesaVariavelByUsuario(userId, despesaId);
+            Despesa despesa = _despesaFixaRepository.getDespesaAvulsaByUsuario(userId, despesaId);
             return despesa;
         }
         

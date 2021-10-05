@@ -131,12 +131,29 @@ namespace Tequila.Controllers
         /**
          * Despesas Variável
          */
-        [HttpPost("variavel/salvar")]
-        public ActionResult salvarDespesaVariavel([FromBody] DespesaVariavelDTO despesaVariavelDto)
+        [HttpPost("avulsa/salvar")]
+        public ActionResult salvarDespesaAvulsa([FromBody] DespesaAvulsaDTO despesaAvulsaDto)
         {
             try
             {
-                Despesa despesa = _despesaService.salvarDespesaVariavel(this.GetUserId(), despesaVariavelDto);
+                Despesa despesa = _despesaService.salvarDespesaAvulsa(this.GetUserId(), despesaAvulsaDto);
+                return Ok(despesa);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        /**
+         * Despesas Avulsa
+         */
+        [HttpGet("avulsa/{id}")]
+        public ActionResult salvarDespesaAvulsa([FromQuery] long id)
+        {
+            try
+            {
+                Despesa despesa = _despesaService.getDespesaAvulsa(this.GetUserId(), id);
                 return Ok(despesa);
             }
             catch (Exception e)
@@ -148,30 +165,13 @@ namespace Tequila.Controllers
         /**
          * Despesas Variável
          */
-        [HttpGet("variavel/{id}")]
-        public ActionResult salvarDespesaVariavel([FromQuery] long id)
-        {
-            try
-            {
-                Despesa despesa = _despesaService.getDespesaVariavel(this.GetUserId(), id);
-                return Ok(despesa);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-        
-        /**
-         * Despesas Variável
-         */
-        [HttpGet("variavel/ativas")]
+        [HttpGet("avulsa/ativas")]
         public ActionResult<PagedResult<Despesa>> getDespesasVariaveis([FromQuery] QueryParams parameters, long? carteiraId)
         {
             try
             {
-                PagedResult<Despesa> despesaVariaveis = _despesaService.getDespesas(parameters, this.GetUserId(), carteiraId, (int)TIPO.VARIAVEL);
-                return Ok(despesaVariaveis);
+                PagedResult<Despesa> despesaAvulsas = _despesaService.getDespesas(parameters, this.GetUserId(), carteiraId, (int)TIPO.AVULSA);
+                return Ok(despesaAvulsas);
             }
             catch (Exception e)
             {

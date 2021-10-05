@@ -1,6 +1,6 @@
 ﻿namespace Tequila.Models.DTOs
 {
-    public class DespesaVariavelDTO
+    public class DespesaAvulsaDTO
     {
         public long? Id { get; set; }
         public long CarteiraId { get; set; }

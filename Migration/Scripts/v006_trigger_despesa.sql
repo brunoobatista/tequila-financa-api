@@ -26,7 +26,7 @@ begin
     end if;
     if (tg_op = 'UPDATE') then
         --tipo 2 = parcelada
-        --tipo 0 = VARIAVEL
+        --tipo 0 = AVULSA
         if (new.tipo_id = 0 OR new.tipo_id = 2) then
             if (new.valor <> old.valor) then
                 select * into v_carteira from carteira where id = new.carteira_id;

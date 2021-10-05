@@ -80,14 +80,14 @@ namespace Tequila.Repositories
             return despesas;
         }
 
-        public Despesa getDespesaVariavelByUsuario(long userId, long despesaId)
+        public Despesa getDespesaAvulsaByUsuario(long userId, long despesaId)
         {
             return _context.Despesa
                 .AsNoTracking()
                 .SingleOrDefault(
                     d => d.UsuarioId == userId && 
                          d.Id == despesaId && 
-                         d.TipoId == (int)TIPO.VARIAVEL && 
+                         d.TipoId == (int)TIPO.AVULSA && 
                          d.Ativo == 1
                     );
         }
