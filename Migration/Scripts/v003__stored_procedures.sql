@@ -29,16 +29,16 @@ BEGIN
             --             Depois sera criado a despesa fixa em si, e entao calcular o valor de despesa da carteira
             --             Esse valor deve ser temporario, o valor previsto sera retirado da carteira
             --             e depois adicionado o valor da finalização
-            INSERT INTO despesa(usuario_id, carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id)
-            VALUES (usuario_id, carteira_id, v_id, descri, valor_prev, data_venc, tipo_id);
+            INSERT INTO despesa(usuario_id, carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id, status_id)
+            VALUES (usuario_id, carteira_id, v_id, descri, valor_prev, data_venc, tipo_id, 1);
 
         when 2 then
             INSERT INTO despesasfixas(usuario_id, descricao, valor_previsto, parcela_atual, total_parcelas, data_vencimento, tipo_id)
             values(usuario_id, descri, valor_prev, 1, total_parc, data_venc, tipo_id)
             RETURNING id INTO v_id;
 
-            INSERT INTO despesa(usuario_id, carteira_id, despesasfixas_id, descricao, valor, data_vencimento, parcela_atual, total_parcelas, tipo_id)
-            VALUES (usuario_id, carteira_id, v_id, descri, valor_prev, data_venc, 1, total_parc, tipo_id);
+            INSERT INTO despesa(usuario_id, carteira_id, despesasfixas_id, descricao, valor, data_vencimento, parcela_atual, total_parcelas, tipo_id, status_id)
+            VALUES (usuario_id, carteira_id, v_id, descri, valor_prev, data_venc, 1, total_parc, tipo_id, 2);
 
         end case;
 

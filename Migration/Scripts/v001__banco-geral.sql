@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS public.Despesa (
   alterado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
   tipo_id INT NOT NULL,
-  status_id INT NOT NULL DEFAULT 1,
+  status_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_carteira_despesa_id
     FOREIGN KEY (carteira_id)
