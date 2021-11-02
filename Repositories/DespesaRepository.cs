@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
@@ -99,7 +98,7 @@ namespace Tequila.Repositories
                 .ToList();
         }
         
-        public bool finalizarDespesa(DespesaFixaDTO despesaFixaDto)
+        public bool finalizarDespesa(DespesaDTO despesaFixaDto)
         {
             int result = 0;
             var conn = (NpgsqlConnection)_context.Database.GetDbConnection();

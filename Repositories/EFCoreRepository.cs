@@ -100,11 +100,11 @@ namespace Tequila.Repositories
             }
         }
         
-        public void Inactive(long id)
+        public bool Inactive(long id)
         {
             var entity = _context.Set<TEntity>().Find(id);
 
-            if (entity == null) return;
+            if (entity == null) return false;
 
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -115,6 +115,7 @@ namespace Tequila.Repositories
                     _context.Entry(entity).State = EntityState.Modified;
                     _context.SaveChanges();
                     transaction.Commit();
+                    return true;
                 }
                 catch (Exception e)
                 {

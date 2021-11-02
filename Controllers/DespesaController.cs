@@ -44,15 +44,15 @@ namespace Tequila.Controllers
         }
 
         /**
-         * Despesas Fixas
+         * Despesas Geral
          */
         [HttpPut("{id}/editar")]
-        public ActionResult<Despesa> atualizar([FromRoute] long id, [FromBody] DespesaFixaDTO despesaFixaDto)
+        public ActionResult<Despesa> atualizar([FromRoute] long id, [FromBody] DespesaDTO despesaFixaDto)
         {
             despesaFixaDto.Id = id;
             try
             {
-                Despesa despesaFixa = _despesaService.atualizar(despesaFixaDto);
+                Despesa despesaFixa = _despesaService.atualizar(GetUserId(), despesaFixaDto);
                 return Ok(despesaFixa);
             }
             catch (Exception e)
@@ -60,14 +60,42 @@ namespace Tequila.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
-        [HttpGet]
-        public ActionResult<PagedResult<Despesa>> getDespesasAll(
-            [FromQuery] QueryParams parameters, string? tipos, bool? ativo)
+
+        [HttpDelete("{id}/cancelar")]
+        public ActionResult<Despesa> cancelar([FromRoute] long id)
         {
             try
             {
-                PagedResult<Despesa> despesas = _despesaService.getDespesasAll(parameters, this.GetUserId(), tipos, ativo);
+                Despesa despesa = _despesaService.cancelarDespesa(id);
+                return Ok(despesa);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpPut("{id}/reativar")]
+        public ActionResult<Despesa> reativar([FromRoute] long id)
+        {
+            try
+            {
+                Despesa despesa = _despesaService.reativarespesa(id);
+                return Ok(despesa);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<PagedResult<Despesa>> getDespesasAll(
+            [FromQuery] QueryParams parameters, string tipos, bool? ativo)
+        {
+            try
+            {
+                PagedResult<Despesa> despesas = _despesaService.getDespesasAll(parameters, this.GetUserId(), tipos, ativo.HasValue ? ativo.Value : true);
                 return Ok(despesas);
             }
             catch (Exception e)
@@ -163,15 +191,34 @@ namespace Tequila.Controllers
         }
         
         /**
-         * Despesas Variável
+         * Despesas Avulsa
          */
         [HttpGet("avulsa/ativas")]
-        public ActionResult<PagedResult<Despesa>> getDespesasVariaveis([FromQuery] QueryParams parameters, long? carteiraId)
+        public ActionResult<PagedResult<Despesa>> getDespesasAvulsas([FromQuery] QueryParams parameters, long? carteiraId)
         {
             try
             {
                 PagedResult<Despesa> despesaAvulsas = _despesaService.getDespesas(parameters, this.GetUserId(), carteiraId, (int)TIPO.AVULSA);
                 return Ok(despesaAvulsas);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        /**
+         * Despesa
+         * remover
+         */
+        [HttpDelete("{id}/remover")]
+        public ActionResult removerDespesaAvulsa(long id)
+        {
+            try
+            {
+               if (!_despesaService.inativarDespesaAvulsa(id)) 
+                   return BadRequest("Despesa não encontrada");
+               return Ok("Despesa removida");
             }
             catch (Exception e)
             {

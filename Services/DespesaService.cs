@@ -14,17 +14,17 @@ namespace Tequila.Services
 {
     public class DespesaService : IDespesaFixaService
     {
-        private readonly DespesaRepository _despesaFixaRepository;
+        private readonly DespesaRepository _despesaRepository;
         private readonly CarteiraRepository _carteiraRepository;
-        public DespesaService(DespesaRepository despesaFixaRepository, CarteiraRepository carteiraRepository)
+        public DespesaService(DespesaRepository despesaRepository, CarteiraRepository carteiraRepository)
         {
-            _despesaFixaRepository = despesaFixaRepository;
+            _despesaRepository = despesaRepository;
             _carteiraRepository = carteiraRepository;
         }
 
         public Despesa getById(long id)
         {
-            return _despesaFixaRepository.Get(id);
+            return _despesaRepository.Get(id);
         }
 
         public Despesa salvarDespesaAvulsa(long userId, DespesaAvulsaDTO despesaAvulsaDto)
@@ -33,11 +33,11 @@ namespace Tequila.Services
             Despesa despesa = Despesa.mapperDespesaAvulsa(userId, carteira.Id, despesaAvulsaDto);
             if (despesaAvulsaDto.Id == null)
             {
-                _despesaFixaRepository.Add(despesa);
+                _despesaRepository.Add(despesa);
             }
             else
             {
-                _despesaFixaRepository.Update(despesa);
+                _despesaRepository.Update(despesa);
             }
 
             return despesa;
@@ -45,29 +45,30 @@ namespace Tequila.Services
 
         public Despesa getDespesaAvulsa(long userId, long despesaId)
         {
-            Despesa despesa = _despesaFixaRepository.getDespesaAvulsaByUsuario(userId, despesaId);
+            Despesa despesa = _despesaRepository.getDespesaAvulsaByUsuario(userId, despesaId);
             return despesa;
         }
         
-        public Despesa atualizar(DespesaFixaDTO despesaFixaDto)
+        public Despesa atualizar(long userId, DespesaDTO despesaDto)
         {
-            Despesa despesaOld = _despesaFixaRepository.Get(despesaFixaDto.Id);
+            Despesa despesaOld = _despesaRepository.Get(despesaDto.Id);
 
             if (despesaOld.TipoId == (int)TIPO.PARCELADO)
             {
                 throw new VerificationException("Despesa Parcelada não pode ser alterada");
             }
-            Despesa despesaFixa = mapper(despesaFixaDto);
-            despesaFixa.DespesasFixasId = despesaOld.DespesasFixasId;
-            despesaFixa.CarteiraId = despesaOld.CarteiraId;
 
-            return _despesaFixaRepository.Update(despesaFixa);
+            Despesa despesaAtualizada = despesaOld.atualizarDados(despesaDto);
+            despesaAtualizada.DespesasFixasId = despesaOld.DespesasFixasId;
+            despesaAtualizada.CarteiraId = despesaOld.CarteiraId;
+            despesaAtualizada.UsuarioId = userId;
+            return _despesaRepository.Update(despesaAtualizada);
         }
         
-        public PagedResult<Despesa> getDespesasAll(QueryParams parameters, long usuarioId, string? tipos, bool? ativo = true)
+        public PagedResult<Despesa> getDespesasAll(QueryParams parameters, long usuarioId, string tipos = "", bool ativo = true)
         {
             long? cartId = null;
-            if (ativo.HasValue && ativo.Value)
+            if (ativo)
             {
                 Carteira aberta = _carteiraRepository.GetCarteiraAtivaByUsuario(usuarioId);
                 if (aberta == null)
@@ -77,7 +78,7 @@ namespace Tequila.Services
 
                 cartId = aberta.Id;
             }
-            return _despesaFixaRepository.getDespesaAll(parameters, usuarioId, tipos, cartId);
+            return _despesaRepository.getDespesaAll(parameters, usuarioId, tipos, cartId);
         }
 
         public PagedResult<Despesa> getDespesas(QueryParams parameters, long usuarioId, long? carteiraId, int tipo)
@@ -100,7 +101,7 @@ namespace Tequila.Services
             Carteira carteira = _carteiraRepository.Get(cartId);
             if (carteira.UsuarioId == usuarioId)
             {
-                return _despesaFixaRepository.getListaCarteiraAtiva(parameters,usuarioId, carteira.Id, tipo);
+                return _despesaRepository.getListaCarteiraAtiva(parameters,usuarioId, carteira.Id, tipo);
             }
 
             return new PagedResult<Despesa>();
@@ -108,15 +109,46 @@ namespace Tequila.Services
 
         public bool finalizarDespesaFixa(long idDespesa, decimal valor)
         {
-            return _despesaFixaRepository.finalizarDespesa(new DespesaFixaDTO() {Id = idDespesa, Valor = valor});
+            return _despesaRepository.finalizarDespesa(new DespesaDTO() {Id = idDespesa, Valor = valor});
+        }
+
+        public bool inativarDespesaAvulsa(long idDespesa)
+        {
+            Despesa despesa = _despesaRepository.Get(idDespesa);
+            if (despesa.TipoId != (int)TIPO.AVULSA)
+                throw new ValidationException("Somente despesa avulsa pode ser removida");
+            return _despesaRepository.Inactive(idDespesa);
         }
         
-        private Despesa mapper(DespesaFixaDTO despesaFixaDto)
+        public Despesa cancelarDespesa(long idDespesa)
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<DespesaFixaDTO, Despesa>());
+            Despesa despesa = _despesaRepository.Get(idDespesa);
+            if (despesa.TipoId == (int)TIPO.PARCELADO)
+                throw new ValidationException("Despesa parcelada não pode ser cancelada");
+            despesa.StatusId = 0;
+            return _despesaRepository.Update(despesa);
+        }
+        
+        public Despesa reativarespesa(long idDespesa)
+        {
+            Despesa despesa = _despesaRepository.Get(idDespesa);
+            if (despesa.TipoId == (int)TIPO.PARCELADO)
+                throw new ValidationException("Despesa parcelada não pode ser reativada");
+            if (despesa.TipoId == (int) TIPO.AVULSA)
+                despesa.StatusId = (int) STATUSDESPESA.FIXADO;
+            else
+                despesa.StatusId = (int) STATUSDESPESA.ABERTO;
+            return _despesaRepository.Update(despesa);
+        }
+        
+        private Despesa mapper(DespesaDTO despesaFixaDto)
+        {
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Despesa, DespesaDTO>());
             var map = config.CreateMapper();
+            var mapper = new Mapper(config);
+ 
 
-            return map.Map<Despesa>(despesaFixaDto);
+            return mapper.Map<Despesa>(despesaFixaDto);
         }
         
     }
