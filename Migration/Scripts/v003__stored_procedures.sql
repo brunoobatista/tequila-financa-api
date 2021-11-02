@@ -1,6 +1,6 @@
 ﻿
 ----------------------------------------------------------------------------------------------
-create or replace procedure inserirdespesasfixas(
+create procedure inserirdespesasfixas(
             INOUT usuario_id bigint,
             INOUT carteira_id bigint,
             INOUT descri character varying,
@@ -8,7 +8,8 @@ create or replace procedure inserirdespesasfixas(
             INOUT data_venc timestamp without time zone,
             INOUT tipo_id integer,
             INOUT total_parc integer,
-            INOUT id_despesa bigint
+            INOUT id_despesa bigint,
+            INOUT status_id integer
         )
     language plpgsql
 as
@@ -18,29 +19,41 @@ DECLARE
     v_carteira_valor numeric;
     novo_valor numeric;
 BEGIN
-
-    CASE tipo_id
-        when 1 then
-            --              Primeiro será inseiro a despesas fixas
-            INSERT INTO despesasfixas(usuario_id, descricao, valor_previsto, data_vencimento, tipo_id)
-            VALUES (usuario_id, descri, valor_prev, data_venc, tipo_id)
-            RETURNING id INTO v_id;
-
-            --             Depois sera criado a despesa fixa em si, e entao calcular o valor de despesa da carteira
-            --             Esse valor deve ser temporario, o valor previsto sera retirado da carteira
-            --             e depois adicionado o valor da finalização
-            INSERT INTO despesa(usuario_id, carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id, status_id)
-            VALUES (usuario_id, carteira_id, v_id, descri, valor_prev, data_venc, tipo_id, 1);
-
-        when 2 then
-            INSERT INTO despesasfixas(usuario_id, descricao, valor_previsto, parcela_atual, total_parcelas, data_vencimento, tipo_id)
-            values(usuario_id, descri, valor_prev, 1, total_parc, data_venc, tipo_id)
-            RETURNING id INTO v_id;
-
-            INSERT INTO despesa(usuario_id, carteira_id, despesasfixas_id, descricao, valor, data_vencimento, parcela_atual, total_parcelas, tipo_id, status_id)
-            VALUES (usuario_id, carteira_id, v_id, descri, valor_prev, data_venc, 1, total_parc, tipo_id, 2);
-
-        end case;
+       --tipo
+        --  2 = PARCELADA
+        --  1 = CONTINUA
+        --  0 = AVULSA
+        --statusdespesa
+        --  0 = CANCELADO
+        --  1 = ABERTO
+        --  2 = FINALIZADO
+        --  3 = FIXADO
+        --status
+        --  0 = CANCELADO
+        --  1 = ABERTO
+        --  2 = FINALIZADO
+        CASE tipo_id
+           when 1 then
+               --              Primeiro será inseiro a despesas fixas
+               INSERT INTO despesasfixas(usuario_id, descricao, valor_previsto, data_vencimento, tipo_id, status_id)
+               VALUES (usuario_id, descri, valor_prev, data_venc, tipo_id, 1)
+               RETURNING id INTO v_id;
+   
+               --             Depois sera criado a despesa fixa em si, e entao calcular o valor de despesa da carteira
+               --             Esse valor deve ser temporario, o valor previsto sera retirado da carteira
+               --             e depois adicionado o valor da finalização
+               INSERT INTO despesa(usuario_id, carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id, status_id)
+               VALUES (usuario_id, carteira_id, v_id, descri, valor_prev, data_venc, tipo_id, 1);
+   
+           when 2 then
+               INSERT INTO despesasfixas(usuario_id, descricao, valor_previsto, parcela_atual, total_parcelas, data_vencimento, tipo_id, status_id)
+               values(usuario_id, descri, valor_prev, 1, total_parc, data_venc, tipo_id, 1)
+               RETURNING id INTO v_id;
+   
+               INSERT INTO despesa(usuario_id, carteira_id, despesasfixas_id, descricao, valor, data_vencimento, parcela_atual, total_parcelas, tipo_id, status_id)
+               VALUES (usuario_id, carteira_id, v_id, descri, valor_prev, data_venc, 1, total_parc, tipo_id, 1);
+   
+           end case;
 
 --    select c.despesa into v_carteira_valor from carteira as c where c.id = carteira_id;
 --    IF v_carteira_valor is null then

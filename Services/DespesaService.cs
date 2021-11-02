@@ -125,6 +125,9 @@ namespace Tequila.Services
             Despesa despesa = _despesaRepository.Get(idDespesa);
             if (despesa.TipoId == (int)TIPO.PARCELADO)
                 throw new ValidationException("Despesa parcelada não pode ser cancelada");
+
+            if (despesa.StatusId == 0)
+                return despesa;
             despesa.StatusId = 0;
             return _despesaRepository.Update(despesa);
         }
@@ -134,6 +137,9 @@ namespace Tequila.Services
             Despesa despesa = _despesaRepository.Get(idDespesa);
             if (despesa.TipoId == (int)TIPO.PARCELADO)
                 throw new ValidationException("Despesa parcelada não pode ser reativada");
+
+            if (despesa.StatusId != 0)
+                return despesa;
             if (despesa.TipoId == (int) TIPO.AVULSA)
                 despesa.StatusId = (int) STATUSDESPESA.FIXADO;
             else

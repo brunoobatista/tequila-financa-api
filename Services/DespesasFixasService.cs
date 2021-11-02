@@ -26,6 +26,11 @@ namespace Tequila.Services
             //     despesasFixas.ParcelaAtual = 1;
             // }
 
+            if (despesasFixasDto.TipoId == (int) TIPO.CONTINUO || despesasFixasDto.TipoId == (int) TIPO.PARCELADO)
+                despesasFixasDto.StatusId = (int)STATUS.ABERTO;
+            else
+                throw new VerificationException("Tipo de Despesa Fixa não liberado");
+            
             DespesasFixas despesasFixas = _despesasFixasRepository.criarDespesasFixas(despesasFixasDto);
             // _despesasFixasRepository.Add(despesasFixas);
             return despesasFixas;
