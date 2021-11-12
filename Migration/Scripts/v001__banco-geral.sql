@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS public.Status (
 -- -----------------------------------------------------
 -- Table public.SitDespesa
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS public.StatusDespesa CASCADE;
+DROP TABLE IF EXISTS public.SituacaoDespesa CASCADE;
 
-CREATE TABLE IF NOT EXISTS public.StatusDespesa (
+CREATE TABLE IF NOT EXISTS public.SituacaoDespesa (
   id INT NOT NULL,
   nome VARCHAR(45) NOT NULL,
   PRIMARY KEY (id))
@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS public.Endereco (
   cep VARCHAR(45) NOT NULL,
   numero VARCHAR(45) NOT NULL,
   complemento VARCHAR(45) NULL,
+  ativo INTEGER NOT NULL DEFAULT 1,
   PRIMARY KEY (id)
   )
 ;
@@ -102,8 +103,8 @@ CREATE TABLE IF NOT EXISTS public.Carteira (
   usuario_id BIGINT NOT NULL,
   status_id INT NOT NULL DEFAULT 1,
   renda NUMERIC(15,2) NOT NULL,
-  despesa NUMERIC(15,2) DEFAULT 0,
-  renda_extra NUMERIC(15,2) DEFAULT 0,
+  despesa NUMERIC(15,2) NOT NULL DEFAULT 0,
+  renda_extra NUMERIC(15,2) NOT NULL DEFAULT 0,
   criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
   alterado_em TIMESTAMP(0) NULL,
   finalizado_em TIMESTAMP(0) NULL,
@@ -170,7 +171,7 @@ CREATE TABLE IF NOT EXISTS public.DespesasFixas (
   id BIGINT NOT NULL DEFAULT NEXTVAL ('public.DespesasFixas_seq'),
   usuario_id BIGINT NOT NULL,
   descricao VARCHAR(255) NOT NULL,
-  valor_previsto NUMERIC(15,2) NULL,
+  valor NUMERIC(15,2) NOT NULL,
   parcela_atual INT NULL,
   total_parcelas INT NULL,
   data_vencimento timestamp(0) NULL,
@@ -212,8 +213,7 @@ CREATE TABLE IF NOT EXISTS public.Despesa (
   usuario_id BIGINT NOT NULL,
   despesasfixas_id BIGINT,
   descricao VARCHAR(255) NOT NULL,
-  valor NUMERIC(15,2) NULL,
-  valor_previsto NUMERIC(15,2) NULL,
+  valor NUMERIC(15,2) NOT NULL,
   total_parcelas INT NULL,
   parcela_atual INT NULL,
   data_vencimento timestamp(0) NULL,
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS public.Despesa (
   alterado_em TIMESTAMP(0) NULL,
   ativo INTEGER NOT NULL DEFAULT 1,
   tipo_id INT NOT NULL,
-  status_id INT NOT NULL,
+  situacao_despesa_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_carteira_despesa_id
     FOREIGN KEY (carteira_id)
@@ -243,9 +243,9 @@ CREATE TABLE IF NOT EXISTS public.Despesa (
     REFERENCES public.Tipo (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT fk_status_despesa_id
-    FOREIGN KEY (status_id)
-    REFERENCES public.StatusDespesa (id)
+  CONSTRAINT fk_situacao_despesa_id
+    FOREIGN KEY (situacao_despesa_id)
+    REFERENCES public.SituacaoDespesa (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   UNIQUE(carteira_id,despesasfixas_id)
@@ -295,6 +295,8 @@ CREATE TABLE EnderecoCompra
 (
  id         bigint NOT NULL,
  usuario_id bigint NOT NULL,
+ carteira_id BIGINT NOT NULL,
+ despesa_id  BIGINT NOT NULL,
  rua        varchar(50) NOT NULL,
  estado     varchar(50) NULL,
  cidade     varchar(50) NOT NULL,
@@ -303,8 +305,21 @@ CREATE TABLE EnderecoCompra
  descricao  varchar(255) NULL,
  latitude   double precision NOT NULL,
  longitude  double precision NOT NULL,
+ criado_em TIMESTAMP(0) NOT NULL DEFAULT NOW(),
+ alterado_em TIMESTAMP(0) NULL,
+ ativo INTEGER NOT NULL DEFAULT 1,
  PRIMARY KEY (id),
- CONSTRAINT fk_usuario_endereco_compra_id FOREIGN KEY (usuario_id) REFERENCES public.Usuario (id)
+ CONSTRAINT fk_usuario_endereco_compra_id FOREIGN KEY (usuario_id) REFERENCES public.Usuario (id),
+ CONSTRAINT fk_carteira_endereco_compra_id
+     FOREIGN KEY (carteira_id)
+     REFERENCES public.Carteira (id)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION,
+ CONSTRAINT fk_despesa_endereco_compra_id
+     FOREIGN KEY (despesa_id)
+     REFERENCES public.Despesa (id)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION,
 );
 
 
@@ -317,7 +332,7 @@ INSERT INTO public.Endereco (id, rua, cep, numero, complemento) VALUES (1, 'Rua 
 -- Data for table public.Usuario
 -- -----------------------------------------------------
 INSERT INTO public.Usuario (id, email, senha, nome, avatar, cpf_cnpj, renda, tipo_renda,endereco_id)
-                    VALUES (1, 'brunoliveirabatista@gmail.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Bruno Batista', '', '', 1650.00, '',1);
+                    VALUES (1, 'brunoliveirabatista@gmail.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Bruno Batista', '', '', 2245.00, '',1);
 
 
 -- -----------------------------------------------------
@@ -330,7 +345,7 @@ INSERT INTO public.Status (id, nome) VALUES (2, 'FINALIZADO');
 -- -----------------------------------------------------
 -- Data for table public.Tipo
 -- -----------------------------------------------------
-INSERT INTO public.Tipo (id, nome) VALUES (0, 'VARIAVEL');
+INSERT INTO public.Tipo (id, nome) VALUES (0, 'AVULSA');
 INSERT INTO public.Tipo (id, nome) VALUES (1, 'CONTINUA');
 INSERT INTO public.Tipo (id, nome) VALUES (2, 'PARCELADA');
 
@@ -338,7 +353,7 @@ INSERT INTO public.Tipo (id, nome) VALUES (2, 'PARCELADA');
 -- -----------------------------------------------------
 -- Data for table public.SitDespesa
 -- -----------------------------------------------------
-INSERT INTO public.StatusDespesa (id, nome) VALUES (0, 'CANCELADO');
-INSERT INTO public.StatusDespesa (id, nome) VALUES (1, 'ABERTO');
-INSERT INTO public.StatusDespesa (id, nome) VALUES (2, 'FINALIZADO');
-INSERT INTO public.StatusDespesa (id, nome) VALUES (3, 'FIXADO');
+INSERT INTO public.SituacaoDespesa (id, nome) VALUES (0, 'CANCELADA');
+INSERT INTO public.SituacaoDespesa (id, nome) VALUES (1, 'ABERTA');
+INSERT INTO public.SituacaoDespesa (id, nome) VALUES (2, 'FINALIZADA');
+INSERT INTO public.SituacaoDespesa (id, nome) VALUES (3, 'FIXADA');

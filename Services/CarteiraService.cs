@@ -68,7 +68,7 @@ namespace Tequila.Services
             List<Despesa> despesas = _despesaFixaRepository.getDespesaContinuaPorCarteira(carteira.Id);
 
             foreach (var despesa in despesas)
-                if (despesa.StatusId == (int)STATUS.ABERTO)
+                if (despesa.SituacaoDespesaId == (int)SITUACAODESPESA.ABERTA)
                     throw new VerificationException("Carteira possui despesa(s) contínua(s) sem finalizar com valor final");
 
             carteira.StatusId = (int) STATUS.FINALIZADO;

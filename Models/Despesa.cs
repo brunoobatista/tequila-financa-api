@@ -33,18 +33,15 @@ namespace Tequila.Models
         public int TipoId { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("status_id")]
-        public int StatusId { get; set; }
+        [Column("situacao_despesa_id")]
+        public int SituacaoDespesaId { get; set; }
         
-        [ForeignKey("StatusId")]
-        public Status Status { get; set; }
+        [ForeignKey("SituacaoDespesaId")]
+        public SituacaoDespesa SituacaoDespesa  { get; set; }
         
         [Column("valor")]
-        public decimal? Valor { get; set; }
-        
-        [Column("valor_previsto")]
-        public decimal? ValorPrevisto { get; set; }
-        
+        public decimal Valor { get; set; }
+
         [Column("parcela_atual")]
         public int? ParcelaAtual { get; set; }
         
@@ -75,7 +72,7 @@ namespace Tequila.Models
             despesa.CarteiraId = carteiraId;
             despesa.UsuarioId = userId;
             despesa.TipoId = (int)TIPO.AVULSA;
-            despesa.StatusId = (int)STATUSDESPESA.FIXADO;
+            despesa.SituacaoDespesaId = (int)SITUACAODESPESA.FIXADA;
 
             return despesa;
         }

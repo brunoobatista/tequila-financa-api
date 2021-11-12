@@ -10,18 +10,31 @@ declare
     v_despesa numeric;
     reg record;
 begin
+        --tipo
+        --  0 = AVULSA
+        --  1 = CONTINUA
+        --  2 = PARCELADA
+        --situacaodespesa
+        --  0 = CANCELADA
+        --  1 = ABERTA
+        --  2 = FINALIZADA
+        --  3 = FIXADA
+        --status
+        --  0 = CANCELADO
+        --  1 = ABERTO
+        --  2 = FINALIZADO
     if (tg_op = 'INSERT') then
         --         create temp table dftmp as
---                 select * from despesasfixas df where df.usuario_id = new.usuario_id and ativo = 1 and status_id = 1;
+        --           select * from despesasfixas df where df.usuario_id = new.usuario_id and ativo = 1 and status_id = 1;
         v_despesa = 0;
         for reg in (select * from despesasfixas df where df.usuario_id = new.usuario_id and ativo = 1 and status_id = 1) loop
-            if reg.total_parcelas is not null then
-                if reg.parcela_atual < reg.total_parcelas then
+            if (reg.total_parcelas IS NOT NULL) then
+                if (reg.parcela_atual < reg.total_parcelas) then
                     v_parcela_atual = reg.parcela_atual + 1;
                     insert into despesa(
-                        usuario_id, carteira_id, despesasfixas_id, descricao, valor, total_parcelas, parcela_atual, data_vencimento, tipo_id, status_id
+                        usuario_id, carteira_id, despesasfixas_id, descricao, valor, total_parcelas, parcela_atual, data_vencimento, tipo_id, situacao_despesa_id
                     ) values (
-                                 new.usuario_id, new.id, reg.id, reg.descricao, reg.valor_previsto, reg.total_parcelas, v_parcela_atual, reg.data_vencimento, reg.tipo_id, 3
+                                 new.usuario_id, new.id, reg.id, reg.descricao, reg.valor, reg.total_parcelas, v_parcela_atual, reg.data_vencimento, 2, 3
                              );
                     update despesasfixas set parcela_atual = v_parcela_atual, alterado_em = now() where id = reg.id;
                 else
@@ -30,12 +43,12 @@ begin
                 end if;
             else
                 insert into despesa(
-                    usuario_id, carteira_id, despesasfixas_id, descricao, valor_previsto, data_vencimento, tipo_id, status_id
+                    usuario_id, carteira_id, despesasfixas_id, descricao, valor, data_vencimento, tipo_id, situacao_despesa_id
                 ) values (
-                             new.usuario_id, new.id, reg.id, reg.descricao, reg.valor_previsto, reg.data_vencimento, reg.tipo_id, 1
+                             new.usuario_id, new.id, reg.id, reg.descricao, reg.valor, reg.data_vencimento, 1, 1
                          );
             end if;
-            v_despesa = v_despesa + reg.valor_previsto;
+            v_despesa = v_despesa + reg.valor;
         end loop;
   
         update carteira set despesa = v_despesa, alterado_em = now() where id = new.id;

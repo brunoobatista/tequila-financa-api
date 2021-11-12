@@ -113,7 +113,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                PagedResult<Despesa> despesaFixas = _despesaService.getDespesas(parameters, this.GetUserId(), null, (int)STATUSDESPESA.TODOS);
+                PagedResult<Despesa> despesaFixas = _despesaService.getDespesas(parameters, this.GetUserId(), null, (int)SITUACAODESPESA.TODOS);
                 return Ok(despesaFixas);
             }
             catch (Exception e)
@@ -128,7 +128,7 @@ namespace Tequila.Controllers
         {
             try
             {
-                PagedResult<Despesa> despesa = _despesaService.getDespesas(parameters, this.GetUserId(), carteiraId, (int)STATUSDESPESA.TODOS);
+                PagedResult<Despesa> despesa = _despesaService.getDespesas(parameters, this.GetUserId(), carteiraId, (int)SITUACAODESPESA.TODOS);
                 return Ok(despesa);
             }
             catch (Exception e)

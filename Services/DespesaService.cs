@@ -58,10 +58,10 @@ namespace Tequila.Services
                 throw new VerificationException("Despesa Parcelada não pode ser alterada");
             }
 
+            despesaDto.DespesasFixasId = despesaOld.DespesasFixasId;
+            despesaDto.CarteiraId = despesaOld.CarteiraId;
+            despesaDto.UsuarioId = userId;
             Despesa despesaAtualizada = despesaOld.atualizarDados(despesaDto);
-            despesaAtualizada.DespesasFixasId = despesaOld.DespesasFixasId;
-            despesaAtualizada.CarteiraId = despesaOld.CarteiraId;
-            despesaAtualizada.UsuarioId = userId;
             return _despesaRepository.Update(despesaAtualizada);
         }
         
@@ -115,6 +115,8 @@ namespace Tequila.Services
         public bool inativarDespesaAvulsa(long idDespesa)
         {
             Despesa despesa = _despesaRepository.Get(idDespesa);
+            if (despesa.Ativo == 0)
+                throw new ValidationException("Despesa não existe");
             if (despesa.TipoId != (int)TIPO.AVULSA)
                 throw new ValidationException("Somente despesa avulsa pode ser removida");
             return _despesaRepository.Inactive(idDespesa);
@@ -123,27 +125,32 @@ namespace Tequila.Services
         public Despesa cancelarDespesa(long idDespesa)
         {
             Despesa despesa = _despesaRepository.Get(idDespesa);
+            if (despesa.Ativo == 0)
+                throw new ValidationException("Despesa não existe");
+            
             if (despesa.TipoId == (int)TIPO.PARCELADO)
                 throw new ValidationException("Despesa parcelada não pode ser cancelada");
 
-            if (despesa.StatusId == 0)
+            if (despesa.SituacaoDespesaId == 0)
                 return despesa;
-            despesa.StatusId = 0;
+            despesa.SituacaoDespesaId = 0;
             return _despesaRepository.Update(despesa);
         }
         
         public Despesa reativarespesa(long idDespesa)
         {
             Despesa despesa = _despesaRepository.Get(idDespesa);
+            if (despesa.Ativo == 0)
+                throw new ValidationException("Despesa não existe");
             if (despesa.TipoId == (int)TIPO.PARCELADO)
                 throw new ValidationException("Despesa parcelada não pode ser reativada");
 
-            if (despesa.StatusId != 0)
+            if (despesa.SituacaoDespesaId != 0)
                 return despesa;
             if (despesa.TipoId == (int) TIPO.AVULSA)
-                despesa.StatusId = (int) STATUSDESPESA.FIXADO;
+                despesa.SituacaoDespesaId = (int) SITUACAODESPESA.FIXADA;
             else
-                despesa.StatusId = (int) STATUSDESPESA.ABERTO;
+                despesa.SituacaoDespesaId = (int) SITUACAODESPESA.ABERTA;
             return _despesaRepository.Update(despesa);
         }
         

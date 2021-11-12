@@ -31,8 +31,8 @@ namespace Tequila.Models
         [Required, Column("descricao")]
         public string Descricao { get; set; }
         
-        [Column("valor_previsto")]
-        public decimal? ValorPrevisto { get; set; }
+        [Column("valor")]
+        public decimal Valor { get; set; }
         
         [Column("parcela_atual")]
         public int? ParcelaAtual { get; set; }

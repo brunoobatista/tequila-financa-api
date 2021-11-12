@@ -31,7 +31,7 @@ namespace Tequila.Repositories
 
         public PagedResult<Despesa> getDespesaAll(QueryParams parameters, long userId, string tipos, long? cartId)
         {
-            IQueryable<Despesa> query = _context.Despesa.AsNoTracking().Where(d => d.UsuarioId == userId);
+            IQueryable<Despesa> query = _context.Despesa.AsNoTracking().Where(d => d.UsuarioId == userId && d.Ativo == 1);
 
             if (tipos != null)
             {

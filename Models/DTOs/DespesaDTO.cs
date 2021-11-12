@@ -10,11 +10,9 @@ namespace Tequila.Models.DTOs
         public long? UsuarioId { get; set; }
         public long? DespesasFixasId { get; set; }
         public int? TipoId { get; set; }
-        public int? StatusId { get; set; }
+        public int? SituacaoDespesaId { get; set; }
 
-        public decimal? Valor { get; set; }
-
-        public decimal? ValorPrevisto { get; set; }
+        public decimal Valor { get; set; }
 
         public int? ParcelaAtual { get; set; }
         

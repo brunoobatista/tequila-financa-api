@@ -75,7 +75,7 @@ namespace Tequila.Controllers
         }
         
         [HttpPut("{id}/editar")]
-        public ActionResult<DespesasFixas> atualizar([FromQuery] long id, DespesasFixasDTO despesasFixasDto)
+        public ActionResult<DespesasFixas> atualizar([FromRoute] long id, DespesasFixasDTO despesasFixasDto)
         {
             try
             {

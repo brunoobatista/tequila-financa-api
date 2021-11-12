@@ -12,7 +12,7 @@ namespace Tequila.Models.DTOs
         
         public string Descricao { get; set; }
 
-        public decimal? ValorPrevisto { get; set; }
+        public decimal Valor { get; set; }
 
         public int? ParcelaAtual { get; set; }
         

@@ -39,7 +39,7 @@ namespace Tequila.Core
                 }).ToList();
 
             var commonFields = srcFields.Intersect(trgFields).ToList();
-
+            TSource newSource;
             foreach (var aField in commonFields)
             {
                 var srcValue = aSource.GetType().GetProperty(aField.Name).GetValue(aSource, null);

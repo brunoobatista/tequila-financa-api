@@ -1,5 +1,6 @@
 ﻿using System.Security;
 using AutoMapper;
+using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.DTOs;
 using Tequila.Models.Enum;
@@ -38,7 +39,8 @@ namespace Tequila.Services
 
         public DespesasFixas atualizar(DespesasFixasDTO despesasFixasDto)
         {
-            DespesasFixas despesasFixas = mapper(despesasFixasDto);
+            DespesasFixas despesasFixasOld = _despesasFixasRepository.Get(despesasFixasDto.Id);
+            DespesasFixas despesasFixas = despesasFixasOld.atualizarDados(despesasFixasDto);
 
             return _despesasFixasRepository.Update(despesasFixas);
         }

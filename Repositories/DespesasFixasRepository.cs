@@ -37,13 +37,13 @@ namespace Tequila.Repositories
 
             var conn = (NpgsqlConnection)_context.Database.GetDbConnection();
             conn.Open();
-            using (var cmd = new NpgsqlCommand("CALL inserirdespesasfixas(@usuario_id, @carteira_id, @descri, @valor_prev, @data_venc, @tipo_id, @total_parc, @id_despesa)", conn))
+            using (var cmd = new NpgsqlCommand("CALL inserirdespesasfixas(@user_id, @cart_id, @descri, @valor_final, @data_venc, @tipo_id, @total_parc, @id_despesa)", conn))
             {
-                cmd.Parameters.Add(new NpgsqlParameter("usuario_id", NpgsqlDbType.Bigint){
+                cmd.Parameters.Add(new NpgsqlParameter("user_id", NpgsqlDbType.Bigint){
                     Direction = ParameterDirection.InputOutput,
                     Value = despesasFixasDto.UsuarioId
                 });
-                cmd.Parameters.Add(new NpgsqlParameter("carteira_id", NpgsqlDbType.Bigint){
+                cmd.Parameters.Add(new NpgsqlParameter("cart_id", NpgsqlDbType.Bigint){
                     Direction = ParameterDirection.InputOutput,
                     Value = carteira.Id
                 });
@@ -51,9 +51,9 @@ namespace Tequila.Repositories
                     Direction = ParameterDirection.InputOutput,
                     Value = despesasFixasDto.Descricao
                 });
-                cmd.Parameters.Add(new NpgsqlParameter("valor_prev", NpgsqlDbType.Numeric){
+                cmd.Parameters.Add(new NpgsqlParameter("valor_final", NpgsqlDbType.Numeric){
                     Direction = ParameterDirection.InputOutput,
-                    Value = despesasFixasDto.ValorPrevisto
+                    Value = despesasFixasDto.Valor
                 });
                 cmd.Parameters.Add(new NpgsqlParameter("data_venc", NpgsqlDbType.Timestamp){
                     Direction = ParameterDirection.InputOutput,

@@ -11,7 +11,7 @@ namespace Tequila.Models.DTOs
         public Status Status { get; set; }
         public decimal Renda { get; set; }
         public decimal? RendaExtra { get; set; }
-        public decimal? Despesa { get; set; }
+        public decimal Despesa { get; set; }
         public DateTime? CriadoEm { get; set; }
         public DateTime? AlteradoEm { get; set; }
     }
