@@ -16,17 +16,26 @@ namespace Tequila.Services
     {
         private readonly DespesaRepository _despesaRepository;
         private readonly CarteiraRepository _carteiraRepository;
-        public DespesaService(DespesaRepository despesaRepository, CarteiraRepository carteiraRepository)
+        private readonly DespesasFixasService _despesasFixasService;
+        public DespesaService(DespesaRepository despesaRepository, CarteiraRepository carteiraRepository, DespesasFixasService despesasFixasService)
         {
             _despesaRepository = despesaRepository;
             _carteiraRepository = carteiraRepository;
+            _despesasFixasService = despesasFixasService;
         }
 
         public Despesa getById(long id)
         {
             return _despesaRepository.Get(id);
         }
-
+        
+        public Despesa salvarDespesaFixa(long userId, DespesasFixasDTO despesasFixasDto)
+        {
+            despesasFixasDto.UsuarioId = userId;
+            DespesasFixas despesasFixas = _despesasFixasService.salvar(despesasFixasDto);
+            Despesa despesa = _despesaRepository.getFirstDespesaByDespesasFixas(despesasFixas.Id);
+            return despesa;
+        }
         public Despesa salvarDespesaAvulsa(long userId, DespesaAvulsaDTO despesaAvulsaDto)
         {
             Carteira carteira = _carteiraRepository.GetCarteiraAtivaByUsuario(userId);

@@ -125,5 +125,11 @@ namespace Tequila.Repositories
             conn.Close();
             return result > 0;
         }
+        public Despesa getFirstDespesaByDespesasFixas(long despesaFixaId)
+        {
+            return _context.Despesa.AsNoTracking()
+                .OrderBy(d => d.Id)
+                .First(d => d.DespesasFixasId == despesaFixaId);
+        }
     }
 }

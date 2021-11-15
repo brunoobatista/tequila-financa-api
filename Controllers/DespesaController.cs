@@ -159,6 +159,23 @@ namespace Tequila.Controllers
         /**
          * Despesas Variável
          */
+        [HttpPost("fixa/salvar")]
+        public ActionResult salvarDespesaFixa([FromBody] DespesasFixasDTO despesasFixasDto)
+        {
+            try
+            {
+                Despesa despesa = _despesaService.salvarDespesaFixa(this.GetUserId(), despesasFixasDto);
+                return Ok(despesa);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        /**
+         * Despesas Variável
+         */
         [HttpPost("avulsa/salvar")]
         public ActionResult salvarDespesaAvulsa([FromBody] DespesaAvulsaDTO despesaAvulsaDto)
         {
