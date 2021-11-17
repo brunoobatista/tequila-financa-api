@@ -39,7 +39,9 @@ namespace Tequila.Services
 
         public DespesasFixas atualizar(DespesasFixasDTO despesasFixasDto)
         {
-            DespesasFixas despesasFixasOld = _despesasFixasRepository.Get(despesasFixasDto.Id);
+            if (!despesasFixasDto.Id.HasValue)
+                throw new VerificationException("Despesa Fixa não Informada");
+            DespesasFixas despesasFixasOld = _despesasFixasRepository.Get(despesasFixasDto.Id.Value);
             DespesasFixas despesasFixas = despesasFixasOld.atualizarDados(despesasFixasDto);
 
             return _despesasFixasRepository.Update(despesasFixas);

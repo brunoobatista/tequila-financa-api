@@ -71,7 +71,8 @@ namespace Tequila.Repositories
                 cmd.Parameters.Add(new NpgsqlParameter("id_despesa", NpgsqlDbType.Bigint)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = despesasFixasDto.Id
+                    Value = (despesasFixasDto.Id != null) ? despesasFixasDto.Id : (object)DBNull.Value,
+                    IsNullable = true
                 });
                 cmd.ExecuteNonQuery();
                 despesasFixasDto.Id = (long)cmd.Parameters[7].Value;
