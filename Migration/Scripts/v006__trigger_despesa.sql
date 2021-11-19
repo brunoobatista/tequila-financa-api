@@ -56,7 +56,7 @@ begin
 
                 if (new.despesasfixas_id is not null) then
                     update despesasfixas
-                    set status_id = new.status_id,
+                    set status_id = 0,
                         ativo = new.ativo,
                         alterado_em = now()
                     where id = new.despesasfixas_id;

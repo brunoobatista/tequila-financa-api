@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -98,7 +99,7 @@ namespace Tequila.Repositories
                 .ToList();
         }
         
-        public bool finalizarDespesa(DespesaDTO despesaFixaDto)
+        public Despesa finalizarDespesa(DespesaDTO despesaFixaDto)
         {
             int result = 0;
             var conn = (NpgsqlConnection)_context.Database.GetDbConnection();
@@ -123,7 +124,14 @@ namespace Tequila.Repositories
                 result = (int) cmd.Parameters[2].Value;
             }
             conn.Close();
-            return result > 0;
+            if (result > 0)
+            {
+                return Get(despesaFixaDto.Id);
+            }
+            else
+            {
+                throw new ValidationException("Não foi possível finalizar despesa");
+            }
         }
         public Despesa getFirstDespesaByDespesasFixas(long despesaFixaId)
         {

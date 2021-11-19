@@ -141,13 +141,13 @@ namespace Tequila.Controllers
          * Despesas Fixas
          */
         [HttpPost("{despesaId}/finalizar")]
-        public ActionResult finalizar(long despesaId, [FromBody] ValorDTO valorDto)
+        public ActionResult<Despesa> finalizar(long despesaId, [FromBody] ValorDTO valorDto)
         {
             try
             {
-                bool result = _despesaService.finalizarDespesaFixa(despesaId, valorDto.valor);
-                if (result)
-                    return Ok(result);
+                Despesa despesa = _despesaService.finalizarDespesaFixa(despesaId, valorDto.valor);
+                if (despesa != null)
+                    return Ok(despesa);
                 return BadRequest("Despesa não encontrada");
             }
             catch (Exception e)

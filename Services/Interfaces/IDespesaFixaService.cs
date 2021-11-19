@@ -1,7 +1,9 @@
-﻿namespace Tequila.Services.Interfaces
+﻿using Tequila.Models;
+
+namespace Tequila.Services.Interfaces
 {
     public interface IDespesaFixaService
     {
-        bool finalizarDespesaFixa(long idDespesa, decimal valor);
+        Despesa finalizarDespesaFixa(long idDespesa, decimal valor);
     }
 }

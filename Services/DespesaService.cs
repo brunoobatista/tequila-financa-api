@@ -116,7 +116,7 @@ namespace Tequila.Services
             return new PagedResult<Despesa>();
         }
 
-        public bool finalizarDespesaFixa(long idDespesa, decimal valor)
+        public Despesa finalizarDespesaFixa(long idDespesa, decimal valor)
         {
             return _despesaRepository.finalizarDespesa(new DespesaDTO() {Id = idDespesa, Valor = valor});
         }
