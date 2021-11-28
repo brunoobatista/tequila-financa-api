@@ -8,6 +8,7 @@ using NpgsqlTypes;
 using Tequila.Core;
 using Tequila.Models;
 using Tequila.Models.DTOs;
+using Tequila.Models.Enum;
 
 namespace Tequila.Repositories
 {
@@ -22,6 +23,14 @@ namespace Tequila.Repositories
         }
 
         public PagedResult<DespesasFixas> getDespesasFixasByUsuario(long idUsuario, QueryParams parameters)
+        {
+            return _context.DespesasFixas
+                .Where(d => d.UsuarioId == idUsuario && d.Ativo == 1 && d.StatusId == (int)STATUS.ABERTO)
+                .AsNoTracking()
+                .GetPaged(parameters);
+        }
+        
+        public PagedResult<DespesasFixas> getDespesasFixasHistorico(long idUsuario, QueryParams parameters)
         {
             return _context.DespesasFixas
                 .Where(d => d.UsuarioId == idUsuario && d.Ativo == 1)

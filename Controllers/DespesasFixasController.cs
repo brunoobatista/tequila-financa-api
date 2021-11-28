@@ -42,6 +42,23 @@ namespace Tequila.Controllers
             }
         }
         
+        [HttpGet]
+        public ActionResult<PagedResult<DespesasFixas>> getDespesasFixasHistorico([FromQuery] QueryParams parameters)
+        {
+            try
+            {
+                PagedResult<DespesasFixas> despesasFixas = _despesasFixasRepository.getDespesasFixasHistorico(this.GetUserId(),parameters);
+                if (despesasFixas.Results.Count == 0)
+                    return NotFound();
+
+                return despesasFixas;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
         [HttpGet("{id}")]
         public ActionResult<DespesasFixas> getDespesasFixas(long id)
         {
