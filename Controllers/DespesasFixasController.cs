@@ -42,7 +42,7 @@ namespace Tequila.Controllers
             }
         }
         
-        [HttpGet]
+        [HttpGet("historico")]
         public ActionResult<PagedResult<DespesasFixas>> getDespesasFixasHistorico([FromQuery] QueryParams parameters)
         {
             try
