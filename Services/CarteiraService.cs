@@ -54,9 +54,9 @@ namespace Tequila.Services
             Carteira carteira = mapper.Map<Carteira>(carteiraDTO);
             carteira.Renda = usuario.Renda;
             
-            _carteiraRepository.Add(carteira);
-
-            return carteira;
+            Carteira carteiraNova = _carteiraRepository.Add(carteira);
+            Carteira carteiraSalva = _carteiraRepository.Get(carteiraNova.Id);
+            return carteiraSalva;
         }
         
         public Carteira finalizarCarteira(CarteiraDTO carteiraDto)

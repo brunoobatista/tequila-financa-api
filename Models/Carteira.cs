@@ -34,7 +34,7 @@ namespace Tequila.Models
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("despesa")]
-        public decimal Despesa { get; set; }
+        public decimal? Despesa { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("criado_em")]
