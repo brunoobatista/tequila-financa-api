@@ -2,8 +2,8 @@
 {
     public enum TIPO
     {
-        CONTINUO = 1,
-        PARCELADO = 2,
+        CONTINUA = 1,
+        PARCELADA = 2,
         AVULSA = 0,
         TODOS = -1
     }

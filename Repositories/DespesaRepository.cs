@@ -95,7 +95,7 @@ namespace Tequila.Repositories
         public List<Despesa> getDespesaContinuaPorCarteira(long carteiraId)
         {
             return _context.Despesa.AsNoTracking()
-                .Where(e => e.CarteiraId == carteiraId && e.TipoId == (int)TIPO.CONTINUO)
+                .Where(e => e.CarteiraId == carteiraId && e.TipoId == (int)TIPO.CONTINUA)
                 .ToList();
         }
         

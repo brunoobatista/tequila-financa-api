@@ -27,7 +27,7 @@ namespace Tequila.Services
             //     despesasFixas.ParcelaAtual = 1;
             // }
 
-            if (despesasFixasDto.TipoId == (int) TIPO.CONTINUO || despesasFixasDto.TipoId == (int) TIPO.PARCELADO)
+            if (despesasFixasDto.TipoId == (int) TIPO.CONTINUA || despesasFixasDto.TipoId == (int) TIPO.PARCELADA)
                 despesasFixasDto.StatusId = (int)STATUS.ABERTO;
             else
                 throw new VerificationException("Tipo de Despesa Fixa não liberado");

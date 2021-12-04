@@ -332,7 +332,7 @@ INSERT INTO public.Endereco (id, rua, cep, numero, complemento) VALUES (1, 'Rua 
 -- Data for table public.Usuario
 -- -----------------------------------------------------
 INSERT INTO public.Usuario (id, email, senha, nome, avatar, cpf_cnpj, renda, tipo_renda,endereco_id)
-                    VALUES (1, 'brunoliveirabatista@gmail.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Bruno Batista', '', '', 2245.00, '',1);
+                    VALUES (1, 'brunoliveirabatista@gmail.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Bruno Batista', '', '', 3400.00, '',1);
 
 
 -- -----------------------------------------------------

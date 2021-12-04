@@ -62,7 +62,7 @@ namespace Tequila.Services
         {
             Despesa despesaOld = _despesaRepository.Get(despesaDto.Id);
 
-            if (despesaOld.TipoId == (int)TIPO.PARCELADO)
+            if (despesaOld.TipoId == (int)TIPO.PARCELADA)
             {
                 throw new VerificationException("Despesa Parcelada não pode ser alterada");
             }
@@ -137,7 +137,7 @@ namespace Tequila.Services
             if (despesa.Ativo == 0)
                 throw new ValidationException("Despesa não existe");
             
-            if (despesa.TipoId == (int)TIPO.PARCELADO)
+            if (despesa.TipoId == (int)TIPO.PARCELADA)
                 throw new ValidationException("Despesa parcelada não pode ser cancelada");
 
             if (despesa.SituacaoDespesaId == 0)
@@ -151,7 +151,7 @@ namespace Tequila.Services
             Despesa despesa = _despesaRepository.Get(idDespesa);
             if (despesa.Ativo == 0)
                 throw new ValidationException("Despesa não existe");
-            if (despesa.TipoId == (int)TIPO.PARCELADO)
+            if (despesa.TipoId == (int)TIPO.PARCELADA)
                 throw new ValidationException("Despesa parcelada não pode ser reativada");
 
             if (despesa.SituacaoDespesaId != 0)
