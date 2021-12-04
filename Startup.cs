@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,10 @@ namespace Tequila
                     Configuration.GetSection("ConnectionStrings")["TequilaDev"]
                 )
             );
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
+            });
 
             services.AddScoped<CarteiraRepository>();
             services.AddScoped<UsuarioRepository>();
