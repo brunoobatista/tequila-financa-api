@@ -69,18 +69,21 @@ namespace Tequila.Repositories
                     throw new Exception(e.Message);
                 }
             }
-    }
+        }
 
         public Usuario salvar(UsuarioDTO usuarioDto)
         {
             var config = new MapperConfiguration(cfg => cfg.CreateMap<UsuarioDTO, Usuario>());
             var mapper = config.CreateMapper();
-
-            Usuario usuario = mapper.Map<Usuario>(usuarioDto);
-
-            if (usuario.Senha == null)
+            
+            if (usuarioDto.senha == null)
                 throw new ArgumentNullException(paramName: "Senha", message: "Senha náo pode estar vazia");
             
+            if (usuarioDto.senha != usuarioDto.confirmacaoSenha)
+                throw new Exception("Senha e confirmação de senha incorretas");
+            
+            Usuario usuario = mapper.Map<Usuario>(usuarioDto);
+
             try
             {
                 // if (usuarioDto.endereco != null)
@@ -118,7 +121,7 @@ namespace Tequila.Repositories
             if (HashService.VerifyHash(alterarSenhaDto.senhaAtual, usuario.Senha))
             {
                 if (alterarSenhaDto.novaSenha != alterarSenhaDto.confirmacaoSenha)
-                    throw new Exception("Nova senha e confirmação incorretas");
+                    throw new Exception("Nova senha e confirmação de senha incorretas");
                 var novaSenha = HashService.GenerateHash(alterarSenhaDto.novaSenha);
                 usuario.Senha = novaSenha;
                 Update(usuario);

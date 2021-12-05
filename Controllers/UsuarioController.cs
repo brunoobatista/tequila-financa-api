@@ -68,7 +68,7 @@ namespace Tequila.Controllers
             }
         }
 
-        [HttpPut("alterar_senha")]
+        [HttpPut("alterar-senha")]
         public ActionResult alterarSenha(AlterarSenhaDTO alterarSenhaDto)
         {
             try

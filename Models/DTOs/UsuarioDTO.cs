@@ -17,6 +17,7 @@ namespace Tequila.Models.DTOs
         public string nome { get; set; }
 
         public string senha { get; set; }
+        public string confirmacaoSenha { get; set; }
 
         public string avatar { get; set; }
 
