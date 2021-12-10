@@ -75,7 +75,9 @@ namespace Tequila.Repositories
         {
             var config = new MapperConfiguration(cfg => cfg.CreateMap<UsuarioDTO, Usuario>());
             var mapper = config.CreateMapper();
-            
+
+            if (usuarioDto.endereco != null && (usuarioDto.endereco.Rua == null || usuarioDto.endereco.Numero == null || usuarioDto.endereco.Cep == null))
+                usuarioDto.endereco = null;
             if (usuarioDto.senha == null)
                 throw new ArgumentNullException(paramName: "Senha", message: "Senha náo pode estar vazia");
             

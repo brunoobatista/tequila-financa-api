@@ -32,7 +32,7 @@ namespace Tequila.Controllers
             {
                 PagedResult<DespesasFixas> despesasFixas = _despesasFixasRepository.getDespesasFixasByUsuario(this.GetUserId(),parameters);
                 if (despesasFixas.Results.Count == 0)
-                    return NotFound();
+                    return NotFound("Não há despesas fixas");
 
                 return despesasFixas;
             }
